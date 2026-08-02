@@ -14,6 +14,7 @@
     --gold:#b98d55; --gold-dark:#8a6a3f;
     --ink:#2b2420; --ink-soft:#5a4f45;
     --glass-bg: rgba(255,255,255,0.4);
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{scroll-behavior:smooth;}
@@ -26,21 +27,34 @@
   .eyebrow{ font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-dark); font-weight:600; margin-bottom:16px; display:block; }
   .glass{ background:var(--glass-bg); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-radius:20px; position:relative; padding:14px 24px; }
   .glass::before{ content:''; position:absolute; inset:0; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(255,255,255,0.85), rgba(185,141,85,0.45)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
-  .btn{ display:inline-flex; align-items:center; gap:10px; background:var(--ink); color:#fff; padding:16px 34px; border-radius:100px; font-size:15px; font-weight:500; letter-spacing:0.02em; transition:transform .25s ease, background .25s ease; }
+  .btn{ display:inline-flex; align-items:center; gap:10px; background:var(--ink); color:#fff; padding:16px 34px; border-radius:100px; font-size:15px; font-weight:500; letter-spacing:0.02em; transition:transform .3s var(--ease-cinematic), background .3s var(--ease-cinematic); }
   .btn:hover{ transform:translateY(-2px); background:var(--gold-dark); }
 
   nav{ position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:22px 32px; }
   nav .brand{ font-family:'Cormorant Garamond', serif; font-size:21px; font-weight:600; color:#fff; }
   nav .btn{ padding:10px 22px; font-size:13px; background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); }
 
-  .hero{ min-height:100vh; position:relative; display:flex; align-items:flex-end; padding:0 0 90px; }
+  /* HERO */
+  .hero{ min-height:100vh; position:relative; display:flex; align-items:flex-end; padding:0 0 64px; }
   .hero video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
-  .hero::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,15,10,0.35) 0%, rgba(20,15,10,0.15) 45%, rgba(20,15,10,0.85) 100%); z-index:1; }
+  .hero::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,15,10,0.4) 0%, rgba(20,15,10,0.15) 45%, rgba(20,15,10,0.9) 100%); z-index:1; }
   .hero-inner{ position:relative; z-index:2; max-width:640px; padding:0 24px; }
   .hero .eyebrow{ color:var(--nude-200); }
   .hero h1{ font-size:clamp(2.2rem, 5.5vw, 3.6rem); color:#fff; line-height:1.1; margin-bottom:18px; }
   .hero p{ font-size:clamp(1rem, 2vw, 1.15rem); color:rgba(255,255,255,0.85); max-width:480px; margin:0 0 30px; }
   .hero .rating{ display:inline-flex; margin-top:24px; color:#fff; font-size:14px; }
+
+  /* WORD REVEAL */
+  .word-wrap{ display:inline-block; overflow:hidden; vertical-align:top; }
+  .word-inner{ display:inline-block; transform:translateY(100%); filter:blur(6px); opacity:0; animation:wordReveal .9s var(--ease-cinematic) forwards; }
+  @keyframes wordReveal{ to{ transform:translateY(0); filter:blur(0); opacity:1; } }
+
+  /* MARQUEE */
+  .marquee-band{ background:var(--ink); padding:18px 0; overflow:hidden; -webkit-mask:linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%); mask:linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%); }
+  .marquee-track{ display:flex; width:max-content; animation:marquee-left 28s linear infinite; gap:48px; }
+  .marquee-track span{ color:rgba(255,255,255,0.7); font-size:13px; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; display:flex; align-items:center; gap:48px; }
+  .marquee-track span::after{ content:'•'; color:var(--gold); margin-left:48px; }
+  @keyframes marquee-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
 
   .section-head{ max-width:620px; margin:0 auto 52px; text-align:center; }
   .section-head h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); margin-bottom:14px; }
@@ -55,7 +69,13 @@
   .media-frame{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; }
   .media-frame img{ width:100%; height:100%; object-fit:cover; }
 
-  .results{ background:var(--ink); color:#fff; }
+  /* PARALLAX RESULTADOS */
+  .results{ background:var(--ink); color:#fff; position:relative; overflow:hidden; }
+  .parallax-bg{ position:absolute; inset:-10% -10% -10% -10%; z-index:0; pointer-events:none; }
+  .parallax-bg .blob{ position:absolute; border-radius:50%; filter:blur(80px); opacity:0.35; }
+  .parallax-bg .blob-1{ width:420px; height:420px; background:radial-gradient(circle, var(--gold), transparent 70%); top:-10%; left:-8%; }
+  .parallax-bg .blob-2{ width:380px; height:380px; background:radial-gradient(circle, var(--nude-200), transparent 70%); bottom:-15%; right:-6%; }
+  .results .wrap{ position:relative; z-index:1; }
   .results .section-head p, .results .section-head .eyebrow{ color:rgba(255,255,255,0.65); }
   .results .section-head h2{ color:#fff; }
   .results-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
@@ -103,13 +123,30 @@
     <source src="media/larissa-video.mp4" type="video/mp4">
   </video>
   <div class="hero-inner">
-    <span class="eyebrow reveal">Arquitetura Labial · Harmonização Facial · Barro Preto, BH</span>
-    <h1 class="reveal">Harmonização que respeita o seu rosto</h1>
-    <p class="reveal">Especialista em Arquitetura Labial e harmonização de perfil, com nota 5.0 no Google e mais de 66 pacientes atendidos.</p>
-    <a class="btn reveal" href="https://wa.me/553182393923" target="_blank" rel="noopener">Agendar minha avaliação</a>
-    <div class="glass rating reveal">★★★★★&nbsp; 5.0 · 66 avaliações no Google</div>
+    <span class="eyebrow">Arquitetura Labial · Harmonização Facial · Barro Preto, BH</span>
+    <h1 id="hero-headline"></h1>
+    <p>Especialista em Arquitetura Labial e harmonização de perfil, com nota 5.0 no Google e mais de 66 pacientes atendidos.</p>
+    <a class="btn" href="https://wa.me/553182393923" target="_blank" rel="noopener">Agendar minha avaliação</a>
+    <div class="glass rating">★★★★★&nbsp; 5.0 · 66 avaliações no Google</div>
   </div>
 </header>
+
+<div class="marquee-band">
+  <div class="marquee-track">
+    <span>Nota 5.0 no Google</span>
+    <span>Arquitetura Labial</span>
+    <span>66 Avaliações Reais</span>
+    <span>Harmonização Facial</span>
+    <span>Barro Preto, BH</span>
+    <span>Também Forma Profissionais</span>
+    <span>Nota 5.0 no Google</span>
+    <span>Arquitetura Labial</span>
+    <span>66 Avaliações Reais</span>
+    <span>Harmonização Facial</span>
+    <span>Barro Preto, BH</span>
+    <span>Também Forma Profissionais</span>
+  </div>
+</div>
 
 <section id="dor">
   <div class="wrap">
@@ -147,6 +184,7 @@
 </section>
 
 <section class="results" id="resultados">
+  <div class="parallax-bg"><div class="blob blob-1" data-parallax="bg-slow"></div><div class="blob blob-2" data-parallax="bg-fast"></div></div>
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Resultados reais</span>
@@ -235,9 +273,18 @@
 <script>
   gsap.registerPlugin(ScrollTrigger);
 
+  // Word-by-word cinematic reveal do headline do Hero
+  (function () {
+    const el = document.getElementById('hero-headline');
+    const text = "Harmonização que respeita o seu rosto";
+    el.innerHTML = text.split(' ').map((word, i) =>
+      `<span class="word-wrap"><span class="word-inner" style="animation-delay:${0.15 + i * 0.1}s">${word}</span></span>`
+    ).join(' ');
+  })();
+
   gsap.utils.toArray('.reveal').forEach((el) => {
     gsap.from(el, {
-      opacity: 0, y: 28, duration: 0.8, ease: 'power2.out',
+      opacity: 0, y: 28, duration: 0.9, ease: 'power2.out',
       scrollTrigger: { trigger: el, start: 'top 88%' }
     });
   });
@@ -248,6 +295,10 @@
     scrollTrigger: { trigger: '#resultados', start: 'top 75%' },
     onUpdate: () => { document.getElementById('counter').textContent = Math.round(counter.v); }
   });
+
+  // Parallax cinematográfico no fundo da seção de resultados
+  gsap.to('.blob-1', { yPercent: -30, ease: 'none', scrollTrigger: { trigger: '#resultados', start: 'top bottom', end: 'bottom top', scrub: 1.5 } });
+  gsap.to('.blob-2', { yPercent: 20, ease: 'none', scrollTrigger: { trigger: '#resultados', start: 'top bottom', end: 'bottom top', scrub: 1.5 } });
 
   document.querySelectorAll('.grid3 .card, .result-card').forEach((card) => {
     const rX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
