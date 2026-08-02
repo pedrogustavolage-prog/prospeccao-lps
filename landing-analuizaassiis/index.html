@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luzuse Clínica — Método Aprimorar® · Contorno Corporal Sem Cirurgia, Betim MG</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.143.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.143.0/examples/jsm/"
+  }
+}
+</script>
+<style>
+  :root{
+    --wine-deep:#2a1014; --wine:#4a1b24; --wine-soft:#7a3b42;
+    --champagne:#eddcc4; --rose-gold:#d9a58a;
+    --ink:#2b1a1a; --ink-soft:#5c4340;
+    --text:#f7ece2; --text-soft:rgba(247,236,226,0.72);
+    --glass-bg: rgba(255,255,255,0.06);
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ font-family:'Inter', sans-serif; color:var(--text); background:var(--wine-deep); line-height:1.6; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:500; letter-spacing:-0.01em; }
+  a{ text-decoration:none; color:inherit; }
+  img,video{ display:block; max-width:100%; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 24px; }
+  section{ padding:120px 0; position:relative; }
+  .eyebrow{ font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--rose-gold); font-weight:600; margin-bottom:16px; display:block; }
+  .glass{ background:var(--glass-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-radius:20px; position:relative; padding:14px 24px; }
+  .glass::before{ content:''; position:absolute; inset:0; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(255,255,255,0.35), rgba(217,165,138,0.35)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+  .btn{ display:inline-flex; align-items:center; gap:10px; background:var(--rose-gold); color:#2a1014; padding:16px 34px; border-radius:100px; font-size:15px; font-weight:600; letter-spacing:0.02em; transition:transform .3s var(--ease-cinematic), background .3s var(--ease-cinematic); }
+  .btn:hover{ transform:translateY(-2px); background:var(--champagne); }
+
+  /* FUNDO 3D PERSISTENTE — "Reflexo" */
+  #scene-reflexo{ position:fixed; inset:0; width:100vw; height:100vh; z-index:-2; display:block; }
+  #scene-scrim{ position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(42,16,20,0.15) 0%, rgba(28,11,13,0.55) 60%, rgba(20,8,9,0.8) 100%); }
+
+  nav{ position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:22px 32px; }
+  nav .brand{ font-family:'Fraunces', serif; font-size:21px; font-weight:500; color:#fff; }
+  nav .btn{ padding:10px 22px; font-size:13px; background:rgba(255,255,255,0.12); color:#fff; backdrop-filter:blur(10px); }
+
+  /* HERO */
+  .hero{ min-height:100vh; position:relative; display:flex; align-items:flex-end; padding:0 0 64px; }
+  .hero-bg{ position:absolute; inset:0; z-index:0; overflow:hidden; }
+  .hero-bg img{ width:100%; height:100%; object-fit:cover; object-position:center 20%; animation:heroKenBurns 22s ease-in-out infinite alternate; }
+  @keyframes heroKenBurns{ from{ transform:scale(1); } to{ transform:scale(1.09); } }
+  .hero::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(20,8,9,0.35) 0%, rgba(20,8,9,0.2) 40%, rgba(15,6,7,0.96) 100%); z-index:1; }
+  .hero-inner{ position:relative; z-index:2; max-width:640px; padding:0 24px; }
+  .hero .eyebrow{ color:var(--champagne); }
+  .hero h1{ font-size:clamp(2.2rem, 5.5vw, 3.7rem); color:#fff; line-height:1.12; margin-bottom:18px; font-style:italic; }
+  .hero p{ font-size:clamp(1rem, 2vw, 1.15rem); color:rgba(255,255,255,0.85); max-width:520px; margin:0 0 30px; font-style:normal; }
+  .hero .rating{ display:inline-flex; margin-top:24px; color:#fff; font-size:13px; padding:10px 18px; }
+
+  /* WORD REVEAL */
+  .word-wrap{ display:inline-block; overflow:hidden; vertical-align:top; }
+  .word-inner{ display:inline-block; transform:translateY(100%); filter:blur(6px); opacity:0; animation:wordReveal .9s var(--ease-cinematic) forwards; }
+  @keyframes wordReveal{ to{ transform:translateY(0); filter:blur(0); opacity:1; } }
+
+  /* MARQUEE */
+  .marquee-band{ background:rgba(20,8,9,0.55); backdrop-filter:blur(6px); padding:18px 0; overflow:hidden; -webkit-mask:linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%); mask:linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%); }
+  .marquee-track{ display:flex; width:max-content; animation:marquee-left 30s linear infinite; gap:48px; }
+  .marquee-track span{ color:rgba(255,255,255,0.7); font-size:13px; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; display:flex; align-items:center; gap:48px; }
+  .marquee-track span::after{ content:'•'; color:var(--rose-gold); margin-left:48px; }
+  @keyframes marquee-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  .section-head{ max-width:640px; margin:0 auto 52px; text-align:center; }
+  .section-head h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); margin-bottom:14px; color:var(--text); }
+  .section-head p{ color:var(--text-soft); font-size:1.05rem; }
+
+  /* CARDS DE BENEFÍCIO */
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .grid3 .card{ --mx:50%; --my:50%; position:relative; overflow:hidden; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); backdrop-filter:blur(10px); border-radius:24px; padding:32px; transform-style:preserve-3d; will-change:transform; transition:border-color .4s ease, box-shadow .4s ease; }
+  .grid3 .card::after{ content:''; position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none; background:radial-gradient(260px circle at var(--mx) var(--my), rgba(217,165,138,0.22), transparent 70%); transition:opacity .4s ease; }
+  .grid3 .card:hover{ border-color:rgba(217,165,138,0.4); box-shadow:0 24px 60px rgba(0,0,0,0.4); }
+  .grid3 .card:hover::after{ opacity:1; }
+  .grid3 .card > *{ position:relative; z-index:1; }
+  .grid3 .card .card-ic{ width:40px; height:40px; margin-bottom:18px; color:var(--rose-gold); transition:transform .4s var(--ease-cinematic); }
+  .grid3 .card:hover .card-ic{ transform:scale(1.15) rotate(-4deg); }
+  .grid3 .card .card-num{ position:absolute; top:14px; right:20px; font-family:'Fraunces', serif; font-weight:600; font-size:2.6rem; color:rgba(255,255,255,0.06); line-height:1; transition:color .4s ease; }
+  .grid3 .card:hover .card-num{ color:rgba(217,165,138,0.16); }
+  .grid3 .card h3{ font-size:1.3rem; margin-bottom:10px; color:var(--rose-gold); }
+  .grid3 .card p{ color:var(--text-soft); font-size:0.95rem; }
+
+  /* REFLEXO — painel espelhado da seção "solução" */
+  .metodo-layout{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+  .reflect-visual{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:380px; gap:0; }
+  .reflect-orb{ width:150px; height:150px; border-radius:50%; background:radial-gradient(circle at 35% 30%, var(--champagne), var(--rose-gold) 55%, transparent 78%); filter:blur(0.5px); box-shadow:0 0 60px rgba(217,165,138,0.35); animation:reflectFloatUp 6s var(--ease-cinematic) infinite alternate; }
+  .reflect-line{ width:220px; height:1px; background:linear-gradient(90deg, transparent, var(--rose-gold), transparent); margin:18px 0; opacity:0.6; }
+  .reflect-orb-mirror{ width:150px; height:96px; border-radius:50% 50% 42% 42% / 60% 60% 40% 40%; background:radial-gradient(circle at 35% 70%, rgba(238,220,196,0.55), rgba(217,165,138,0.28) 55%, transparent 78%); filter:blur(1.5px); opacity:0.75; animation:reflectFloatDown 6s var(--ease-cinematic) infinite alternate; }
+  @keyframes reflectFloatUp{ from{ transform:translateY(0); } to{ transform:translateY(-10px); } }
+  @keyframes reflectFloatDown{ from{ transform:translateY(0) scaleY(1); } to{ transform:translateY(6px) scaleY(0.92); } }
+  .reflect-caption{ position:absolute; bottom:0; text-align:center; max-width:220px; font-size:12.5px; color:var(--text-soft); line-height:1.5; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
+  .media-frame{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; box-shadow:0 30px 80px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); }
+  .media-frame img, .media-frame video{ width:100%; height:100%; object-fit:cover; }
+  .media-frame.portrait-tall{ aspect-ratio:9/16; max-width:300px; margin:0 auto; }
+
+  .conceito-panel{ max-width:480px; padding:40px; }
+  .conceito-panel .eyebrow{ color:var(--champagne); }
+  .conceito-panel h2{ color:#fff; font-size:clamp(1.9rem, 4vw, 2.8rem); margin-bottom:14px; }
+  .conceito-panel p{ color:rgba(255,255,255,0.82); font-size:1.02rem; }
+
+  /* PARA QUEM É / NÃO É */
+  .indicado-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+  .indicado-card{ border-radius:20px; padding:32px; }
+  .indicado-card.sim{ background:rgba(217,165,138,0.08); border:1px solid rgba(217,165,138,0.3); }
+  .indicado-card.nao{ background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); }
+  .indicado-card h3{ font-size:1.15rem; margin-bottom:14px; color:var(--rose-gold); }
+  .indicado-card.nao h3{ color:var(--text-soft); }
+  .indicado-card ul{ list-style:none; display:flex; flex-direction:column; gap:10px; color:var(--text-soft); font-size:0.95rem; }
+  .indicado-card li::before{ content:'—'; color:var(--rose-gold); margin-right:8px; }
+
+  /* DEPOIMENTOS */
+  .pull-quote{ text-align:center; margin:0 auto 20px; max-width:680px; font-family:'Fraunces', serif; font-size:clamp(1.4rem,3.2vw,1.9rem); color:var(--text); font-style:italic; line-height:1.4; }
+  .pull-quote em{ color:var(--rose-gold); font-style:normal; }
+  .pull-quote cite{ display:block; font-family:'Inter',sans-serif; font-style:normal; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-soft); margin-top:10px; }
+  .proof-strip{ text-align:center; margin-top:56px; }
+  .proof-strip .stars{ font-size:26px; letter-spacing:4px; color:var(--rose-gold); margin-bottom:10px; }
+  .proof-strip .score{ font-family:'Fraunces', serif; font-size:2.8rem; color:var(--text); }
+  .proof-strip .sub{ color:var(--text-soft); font-size:14px; margin-top:4px; }
+  .tags-strip{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:28px; }
+  .tags-strip span{ font-size:12.5px; color:var(--text-soft); background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:100px; padding:7px 16px; }
+
+  /* SEGURANÇA */
+  .seguranca-list{ display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:760px; margin:0 auto; }
+  .seguranca-item{ display:flex; gap:14px; align-items:flex-start; padding:18px; }
+  .seguranca-item svg{ width:22px; height:22px; color:var(--rose-gold); flex:none; margin-top:2px; }
+  .seguranca-item p{ color:var(--text-soft); font-size:0.94rem; }
+  .seguranca-item strong{ color:var(--text); display:block; margin-bottom:2px; font-size:0.98rem; }
+
+  /* FAQ */
+  .faq{ display:flex; flex-direction:column; gap:12px; }
+  .faq-item{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:16px; overflow:hidden; transition:border-color .3s ease; }
+  .faq-item[open]{ border-color:rgba(217,165,138,0.45); }
+  .faq-item summary{ list-style:none; cursor:pointer; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; font-weight:500; font-size:1.02rem; color:var(--text); }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{ content:'+'; font-family:'Fraunces', serif; font-size:1.6rem; color:var(--rose-gold); line-height:1; transition:transform .3s ease; flex:none; }
+  .faq-item[open] summary::after{ transform:rotate(45deg); }
+  .faq-item .faq-a{ padding:0 20px 18px; color:var(--text-soft); font-size:0.95rem; line-height:1.65; }
+
+  .map-frame{ width:100%; height:320px; border-radius:20px; border:1px solid rgba(255,255,255,0.1); box-shadow:0 30px 80px rgba(0,0,0,0.45); filter:grayscale(0.25) sepia(0.15); }
+  .horario-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:24px; margin-top:24px; font-size:13.5px; color:var(--text-soft); }
+  .horario-row strong{ color:var(--text); }
+
+  .cta-final{ background:linear-gradient(160deg, #1c0a0c 0%, #4a1b24 55%, #d9a58a 130%); color:#fff; text-align:center; border-radius:28px; padding:72px 32px; border:1px solid rgba(255,255,255,0.08); }
+  .cta-final h2{ color:#fff; font-size:clamp(1.8rem,4vw,2.6rem); }
+  .cta-final p{ color:rgba(255,255,255,0.75); max-width:480px; margin:14px auto 32px; }
+  .cta-final .btn{ background:#fff; color:var(--ink); }
+  .cta-final .btn:hover{ background:var(--champagne); }
+
+  footer{ padding:56px 0 120px; text-align:center; color:var(--text-soft); font-size:13px; }
+  footer .brand{ font-family:'Fraunces', serif; font-size:20px; color:var(--text); display:block; margin-bottom:10px; }
+  .social-row{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:22px; }
+  .social-row a{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-soft); transition:all .3s var(--ease-cinematic); }
+  .social-row a:hover{ background:var(--rose-gold); color:#1a1209; border-color:var(--rose-gold); }
+  .social-row svg{ width:17px; height:17px; }
+
+  .fab-wpp{
+    position:fixed; right:24px; bottom:28px; z-index:60; width:64px; height:64px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; color:var(--rose-gold);
+    background:rgba(255,255,255,0.08); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.22), 0 14px 40px rgba(0,0,0,0.45);
+    transform-style:preserve-3d; will-change:transform; opacity:0;
+  }
+  .fab-wpp::before{
+    content:''; position:absolute; inset:0; border-radius:50%; padding:1.4px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.65) 0%, rgba(217,165,138,0.35) 35%, rgba(255,255,255,0) 55%, rgba(217,165,138,0.35) 75%, rgba(255,255,255,0.65) 100%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+  .fab-wpp .fab-glow{ position:absolute; inset:-26px; z-index:-1; border-radius:50%; background:radial-gradient(ellipse at center, rgba(217,165,138,0.45) 0%, rgba(217,165,138,0.15) 45%, transparent 72%); pointer-events:none; animation:fabPulse 2.8s ease-in-out infinite; }
+  @keyframes fabPulse{ 0%,100%{ opacity:.55; transform:scale(1); } 50%{ opacity:1; transform:scale(1.14); } }
+  .fab-wpp .fab-dot{ position:absolute; top:2px; right:2px; width:12px; height:12px; border-radius:50%; background:#5fd38a; box-shadow:0 0 0 2px rgba(20,8,9,0.8); animation:dotPulse 2s ease-in-out infinite; }
+  @keyframes dotPulse{ 0%,100%{ box-shadow:0 0 0 2px rgba(20,8,9,0.8), 0 0 0 0 rgba(95,211,138,0.5); } 50%{ box-shadow:0 0 0 2px rgba(20,8,9,0.8), 0 0 0 6px rgba(95,211,138,0); } }
+  .fab-wpp svg{ width:27px; height:27px; }
+
+  #preloader{ position:fixed; inset:0; z-index:200; background:var(--wine-deep); display:flex; align-items:center; justify-content:center; transition:opacity .8s var(--ease-cinematic), visibility .8s; }
+  #preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .preloader-inner{ text-align:center; padding:0 24px; }
+  .preloader-inner .eyebrow{ color:var(--rose-gold); }
+  .preloader-inner h1{ font-family:'Fraunces', serif; font-size:clamp(1.5rem,4vw,2.3rem); color:#fff; font-weight:500; font-style:italic; line-height:1.3; margin:14px 0 34px; }
+  .preloader-bar{ width:220px; height:2px; background:rgba(255,255,255,0.12); margin:0 auto; border-radius:2px; overflow:hidden; }
+  .preloader-fill{ width:0%; height:100%; background:linear-gradient(90deg, var(--wine-soft), var(--rose-gold)); }
+
+  html.smooth-active #smooth-wrapper{ position:fixed; inset:0; overflow:hidden; }
+  html.smooth-active #smooth-content{ overflow:visible; width:100%; }
+
+  #grain{ position:fixed; inset:0; z-index:150; pointer-events:none; opacity:0.045; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:180px 180px; }
+
+  @media (hover:hover) and (pointer:fine){
+    body, a, button, summary, .fab-wpp{ cursor:none; }
+  }
+  .cursor-ring{ position:fixed; top:0; left:0; width:24px; height:24px; margin:-12px 0 0 -12px; border-radius:50%; border:1.3px solid var(--rose-gold); z-index:250; pointer-events:none;
+    transition:width .28s var(--ease-cinematic), height .28s var(--ease-cinematic), margin .28s var(--ease-cinematic), background .28s ease, border-color .28s ease; }
+  .cursor-ring.hover{ width:56px; height:56px; margin:-28px 0 0 -28px; background:rgba(217,165,138,0.14); border-color:rgba(217,165,138,0.5); }
+  @media (hover:none), (pointer:coarse){ .cursor-ring{ display:none; } }
+
+  @media (max-width: 820px){
+    .grid3{ grid-template-columns:1fr; }
+    .two-col{ grid-template-columns:1fr; }
+    .metodo-layout{ grid-template-columns:1fr; }
+    .indicado-grid{ grid-template-columns:1fr; }
+    .seguranca-list{ grid-template-columns:1fr; }
+    .reflect-visual{ min-height:280px; order:-1; }
+    .fab-wpp{ right:16px; bottom:20px; width:54px; height:54px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="preloader-inner">
+    <span class="eyebrow">Luzuse Clínica · Método Aprimorar®</span>
+    <h1>Existe uma versão sua<br>que você ainda não acessou</h1>
+    <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+  </div>
+</div>
+
+<canvas id="scene-reflexo"></canvas>
+<div id="scene-scrim"></div>
+<div id="grain"></div>
+<div class="cursor-ring"></div>
+
+<nav>
+  <span class="brand">Luzuse Clínica</span>
+  <a class="btn" href="https://wa.me/5531991434423" target="_blank" rel="noopener">Agendar avaliação</a>
+</nav>
+
+<div id="smooth-wrapper"><div id="smooth-content">
+
+<header class="hero">
+  <div class="hero-bg"><img src="media/retrato-hero.jpg" alt="Ana Luiza Assis, criadora do Método Aprimorar"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">Luzuse Clínica · Método Aprimorar® · Betim, MG</span>
+    <h1 id="hero-headline"></h1>
+    <p>O Método Aprimorar trabalha contorno corporal — barriga volumosa, flácida, estufada ou lipedema — sem cirurgia e sem injetáveis. Resultado que se vê, não que se esconde.</p>
+    <a class="btn" href="https://wa.me/5531991434423" target="_blank" rel="noopener">Agendar minha avaliação</a>
+    <div class="glass rating">★★★★★&nbsp; 5.0 no Google · 166 avaliações</div>
+  </div>
+</header>
+
+<div class="marquee-band">
+  <div class="marquee-track">
+    <span>Método Aprimorar®</span>
+    <span>Contorno Corporal Sem Cirurgia</span>
+    <span>Criolipólise</span>
+    <span>Lipedema &amp; Linfedema</span>
+    <span>Betim, MG</span>
+    <span>Nota 5.0 no Google</span>
+    <span>Método Aprimorar®</span>
+    <span>Contorno Corporal Sem Cirurgia</span>
+    <span>Criolipólise</span>
+    <span>Lipedema &amp; Linfedema</span>
+    <span>Betim, MG</span>
+    <span>Nota 5.0 no Google</span>
+  </div>
+</div>
+
+<section id="dor">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">O problema</span>
+      <h2>Você já tentou de tudo pra recuperar o contorno do corpo</h2>
+      <p>Dieta, treino, chá, cinta — e a barriga volumosa, flácida ou estufada continua ali, incomodando no espelho e na roupa que não veste mais como antes. A dúvida de sempre: será que só resolve no bisturi?</p>
+    </div>
+  </div>
+</section>
+
+<section id="solucao">
+  <div class="wrap metodo-layout">
+    <div class="glass conceito-panel reveal">
+      <span class="eyebrow">O método</span>
+      <h2>Método Aprimorar®</h2>
+      <p>Criado pela própria Ana Luiza, o Método Aprimorar trabalha o contorno corporal sem cortes, sem agulha e sem tempo de recuperação. Não é sobre virar outra pessoa — é sobre acessar a versão que já é sua.</p>
+    </div>
+    <div class="reflect-visual reveal" aria-hidden="true">
+      <div class="reflect-orb"></div>
+      <div class="reflect-line"></div>
+      <div class="reflect-orb-mirror"></div>
+      <div class="reflect-caption">Aprimorar não adiciona. Revela o que já é seu.</div>
+    </div>
+  </div>
+</section>
+
+<section id="beneficios">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Por que escolher</span>
+      <h2>O que quem já passou por aqui mais comenta</h2>
+      <p>Direto das 166 avaliações reais no Google — não é o que a clínica diz de si mesma, é o que o público mais repete.</p>
+    </div>
+    <div class="grid3 reveal">
+      <div class="card">
+        <span class="card-num">01</span>
+        <svg class="card-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <h3>Equipe que você sente</h3>
+        <p>"Equipe" é o termo mais citado nas avaliações (26 menções) — simpatia e capacitação em primeiro lugar, antes até do procedimento em si.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">02</span>
+        <svg class="card-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <h3>Atendimento com hospitalidade</h3>
+        <p>Wi-Fi, ambiente acessível pra cadeirantes e até um lanchinho durante o atendimento — detalhes que viraram comentário recorrente nas avaliações.</p>
+      </div>
+      <div class="card">
+        <span class="card-num">03</span>
+        <svg class="card-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 4.6L5 9l4.1 3.5L8 17l4-2.7L16 17l-1.1-4.5L19 9l-5.1-1.4L12 3z"/></svg>
+        <h3>Laser e limpeza de pele</h3>
+        <p>Depilação a laser e limpeza de pele estão entre os temas mais citados nos comentários — ao lado do Método Aprimorar, o carro-chefe do dia a dia da clínica.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="indicado">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Pra quem é</span>
+      <h2>O Método Aprimorar foi pensado pra você?</h2>
+    </div>
+    <div class="indicado-grid reveal">
+      <div class="indicado-card sim">
+        <h3>Faz sentido se você</h3>
+        <ul>
+          <li>Tem barriga volumosa, flácida, estufada ou lida com lipedema/linfedema</li>
+          <li>Quer recuperar contorno corporal sem cirurgia e sem injetáveis</li>
+          <li>Prefere organizar a visita em bloco — clientes vêm de Betim, mas também de SP, SC e até de fora do país</li>
+        </ul>
+      </div>
+      <div class="indicado-card nao">
+        <h3>Talvez não seja o momento se</h3>
+        <ul>
+          <li>Você busca resultado cirúrgico imediato</li>
+          <li>Já está em tratamento cirúrgico ativo — a avaliação decide o encaminhamento certo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="depoimentos">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Resultados reais</span>
+      <h2>O que dizem as 166 avaliações no Google</h2>
+    </div>
+    <div class="pull-quote reveal">"Ela salvou <em>minha vida!</em>"</div>
+    <div class="pull-quote reveal" style="margin-top:36px;">"Foi a melhor escolha e investimento... <em>a melhor equipe de Betim.</em>"</div>
+    <div class="proof-strip reveal">
+      <div class="stars">★★★★★</div>
+      <div class="score"><span id="counter">0</span>+</div>
+      <div class="sub">avaliações reais no Google · nota 5.0</div>
+      <div class="tags-strip">
+        <span>equipe · 26 menções</span>
+        <span>atendimento · 11 menções</span>
+        <span>laser · 10 menções</span>
+        <span>limpeza de pele · 10 menções</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="seguranca">
+  <div class="wrap" style="max-width:820px;">
+    <div class="section-head reveal">
+      <span class="eyebrow">Segurança, não promessa vazia</span>
+      <h2>O que garante o resultado</h2>
+    </div>
+    <div class="seguranca-list reveal">
+      <div class="seguranca-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <p><strong>Avaliação antes de tudo</strong>Nenhum procedimento é indicado sem antes entender o que faz sentido pro seu corpo e sua rotina.</p>
+      </div>
+      <div class="seguranca-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 12h6M12 9v6"/></svg>
+        <p><strong>Equipamentos modernos</strong>Foco em resultado natural e discrição, com equipe qualificada acompanhando cada etapa.</p>
+      </div>
+      <div class="seguranca-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v6M9 13l-3 8M15 13l3 8M9 13h6"/></svg>
+        <p><strong>Ambiente acessível</strong>Entrada, banheiro e assento adaptados pra cadeirantes, dentro do Selleto Office.</p>
+      </div>
+      <div class="seguranca-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+        <p><strong>Conforto no local</strong>Wi-Fi e agendamento prévio garantido — sem sala de espera lotada, sem pressa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="autoridade">
+  <div class="wrap two-col reveal">
+    <div>
+      <span class="eyebrow">Autoridade reconhecida</span>
+      <h2>Criadora do próprio método, não aplicadora de fórmula pronta</h2>
+      <p style="color:var(--text-soft); margin-top:14px;">Ana Luiza participa de congressos do setor (ESTETIKA 2026 entre eles) e é criadora do Método Aprimorar® — uma credencial que poucos negócios de estética da região têm.</p>
+    </div>
+    <div class="media-frame"><img src="media/retrato-perfil-vinho.jpg" alt="Ana Luiza Assis, criadora do Método Aprimorar"></div>
+  </div>
+</section>
+
+<section id="quem-sou-eu">
+  <div class="wrap two-col reveal">
+    <div class="media-frame" style="max-width:420px;"><img src="media/retrato-frontal.jpg" alt="Ana Luiza Assis"></div>
+    <div>
+      <span class="eyebrow">Quem cuida de você</span>
+      <h2>Ana Luiza Assis, 28 anos</h2>
+      <p style="color:var(--text-soft); margin-top:14px;">Criadora do Método Aprimorar, desenvolvido pra ajudar mulheres a conquistarem resultados e mais confiança com o próprio corpo. "O que mais amo no meu trabalho é ver outras mulheres se sentindo mais confiantes, seguras e felizes com elas mesmas — é isso que me move todos os dias."</p>
+    </div>
+  </div>
+  <div class="wrap two-col reveal" style="margin-top:80px;">
+    <div>
+      <span class="eyebrow">Bastidores reais</span>
+      <h2>Dentro da própria clínica</h2>
+      <p style="color:var(--text-soft); margin-top:14px;">Sem estúdio, sem cenário montado — a sala de atendimento real da Luzuse Clínica, gravada no dia a dia.</p>
+    </div>
+    <div class="media-frame portrait-tall">
+      <video muted loop playsinline preload="metadata" poster="media/bastidores-poster.jpg" controls>
+        <source src="media/bastidores-clinica.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap" style="max-width:680px;">
+    <div class="section-head reveal"><span class="eyebrow">Dúvidas frequentes</span><h2>Perguntas comuns</h2></div>
+    <div class="faq reveal">
+      <details class="faq-item">
+        <summary>O procedimento dói ou tem tempo de recuperação?</summary>
+        <div class="faq-a">O Método Aprimorar é não-invasivo — sem cirurgia e sem injetáveis, sem tempo de parada. Cada caso é explicado em detalhe na avaliação.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Preciso de quantas sessões?</summary>
+        <div class="faq-a">Varia por caso. Isso é definido na avaliação individual, não é o mesmo protocolo pra todo mundo.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Atendem só quem mora em Betim?</summary>
+        <div class="faq-a">Não — parte da clientela vem de outras cidades e até de fora do país. A agenda é organizada em blocos pra quem vem de longe.</div>
+      </details>
+      <details class="faq-item">
+        <summary>Como chego até a clínica?</summary>
+        <div class="faq-a">Estamos no Selleto Office, Av. Governador Valadares, 851 — Centro, Betim, MG — ver mapa abaixo.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="local">
+  <div class="wrap reveal">
+    <div class="section-head"><span class="eyebrow">Localização</span><h2>Av. Governador Valadares, 851 — Selleto Office, Betim</h2></div>
+    <iframe class="map-frame" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      src="https://www.google.com/maps?q=Av.+Governador+Valadares,+851+-+Centro,+Betim+-+MG,+32600-216&output=embed"></iframe>
+    <div class="horario-row">
+      <span><strong>Ter–sex</strong> 09h–19h</span>
+      <span><strong>Sáb</strong> 09h–13h</span>
+      <span><strong>Dom e seg</strong> fechado</span>
+    </div>
+  </div>
+</section>
+
+<section id="agendar">
+  <div class="wrap reveal">
+    <div class="cta-final">
+      <span class="eyebrow" style="color:var(--champagne);">Agenda em blocos — poucas avaliações novas por semana</span>
+      <h2>Garanta sua avaliação com o Método Aprimorar</h2>
+      <p>Fale agora e escolha o melhor horário — sem compromisso.</p>
+      <a class="btn" href="https://wa.me/5531991434423" target="_blank" rel="noopener">Falar no WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="brand">Luzuse Clínica · Ana Luiza Assis</span>
+    Av. Governador Valadares, 851 — Selleto Office, Centro, Betim - MG
+    <div class="social-row">
+      <a href="https://www.instagram.com/analuizaassiis/" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="https://wa.me/5531991434423" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.85.5 3.58 1.36 5.07L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.75 1.24 1.62 2 .21.19.42.38.65.58 1.11.98 1.93.85 2.14.79.29-.08.46-.28.6-.47.14-.19.4-.6.8-.7.15-.04.4-.02.63.13.23.16 1.44.68 1.68.8.24.12.4.18.46.28.06.11.06.62-.18 1.3z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+</div></div>
+
+<a class="fab-wpp" id="fabWpp" href="https://wa.me/5531991434423" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <span class="fab-glow"></span>
+  <span class="fab-dot"></span>
+  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.85.5 3.58 1.36 5.07L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.38-.5.08-1.12.11-1.8-.11-.42-.13-.96-.31-1.65-.6-2.9-1.25-4.8-4.17-4.94-4.36-.14-.19-1.18-1.57-1.18-3 0-1.43.75-2.13 1.02-2.42.27-.29.58-.36.78-.36.19 0 .39 0 .56.01.18.01.42-.07.65.5.24.58.82 2 .89 2.15.07.14.12.31.02.5-.1.19-.15.31-.29.48-.15.17-.31.38-.44.51-.15.15-.3.31-.13.6.17.29.75 1.24 1.62 2 .21.19.42.38.65.58 1.11.98 1.93.85 2.14.79.29-.08.46-.28.6-.47.14-.19.4-.6.8-.7.15-.04.4-.02.63.13.23.16 1.44.68 1.68.8.24.12.4.18.46.28.06.11.06.62-.18 1.3z"/></svg>
+</a>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script src="vendor/ScrollSmoother.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
+
+  try {
+    document.documentElement.classList.add('smooth-active');
+    ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.3, smoothTouch: 0.1, effects: false });
+  } catch (err) {
+    document.documentElement.classList.remove('smooth-active');
+    console.warn('ScrollSmoother indisponível — mantendo scroll padrão.', err);
+  }
+
+  function revealHero() {
+    const el = document.getElementById('hero-headline');
+    const text = "Existe uma versão sua que você ainda não acessou";
+    el.innerHTML = text.split(' ').map((word, i) =>
+      `<span class="word-wrap"><span class="word-inner" style="animation-delay:${0.1 + i * 0.08}s">${word}</span></span>`
+    ).join(' ');
+  }
+  function hidePreloader() {
+    const pre = document.getElementById('preloader');
+    if (pre && !pre.classList.contains('hide')) { pre.classList.add('hide'); revealHero(); }
+  }
+  gsap.to('#preloaderFill', { width: '100%', duration: 1.6, ease: 'power1.inOut' });
+  window.addEventListener('load', () => setTimeout(hidePreloader, 1200));
+  setTimeout(hidePreloader, 3200);
+
+  gsap.utils.toArray('.reveal').forEach((el) => {
+    gsap.from(el, {
+      opacity: 0, y: 28, duration: 0.9, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 88%' }
+    });
+  });
+
+  gsap.utils.toArray('.section-head h2').forEach((h) => {
+    gsap.fromTo(h, { clipPath: 'inset(0 0 100% 0)' }, {
+      clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.out',
+      scrollTrigger: { trigger: h, start: 'top 88%' }
+    });
+  });
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const ring = document.querySelector('.cursor-ring');
+    const rx = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
+    const ry = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
+    window.addEventListener('mousemove', (e) => { rx(e.clientX); ry(e.clientY); });
+    document.querySelectorAll('a, .grid3 .card, summary, .fab-wpp').forEach((el) => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+  }
+
+  document.querySelectorAll('.btn').forEach((btn) => {
+    const mx = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3' });
+    const my = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3' });
+    btn.addEventListener('mousemove', (e) => {
+      const r = btn.getBoundingClientRect();
+      mx((e.clientX - r.left - r.width / 2) * 0.3);
+      my((e.clientY - r.top - r.height / 2) * 0.3);
+    });
+    btn.addEventListener('mouseleave', () => { mx(0); my(0); });
+  });
+
+  gsap.from('.grid3 .card', {
+    opacity: 0, y: 24, duration: 0.7, ease: 'power2.out', stagger: 0.12,
+    scrollTrigger: { trigger: '.grid3', start: 'top 85%' }
+  });
+  gsap.from('.faq-item', {
+    opacity: 0, y: 16, duration: 0.6, ease: 'power2.out', stagger: 0.08,
+    scrollTrigger: { trigger: '.faq', start: 'top 88%' }
+  });
+  gsap.from('.seguranca-item', {
+    opacity: 0, y: 16, duration: 0.6, ease: 'power2.out', stagger: 0.08,
+    scrollTrigger: { trigger: '.seguranca-list', start: 'top 88%' }
+  });
+
+  const counter = { v: 0 };
+  gsap.to(counter, {
+    v: 166, duration: 1.8, ease: 'power2.out',
+    scrollTrigger: { trigger: '#depoimentos', start: 'top 75%' },
+    onUpdate: () => { document.getElementById('counter').textContent = Math.round(counter.v); }
+  });
+
+  document.querySelectorAll('.grid3 .card, .fab-wpp').forEach((card) => {
+    const rX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
+    const rY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
+    const sc = gsap.quickTo(card, 'scale', { duration: 0.4, ease: 'power3' });
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      rY(px * (card.id === 'fabWpp' ? 18 : 8)); rX(-py * (card.id === 'fabWpp' ? 18 : 8));
+      if (card.id === 'fabWpp') sc(1.08);
+      card.style.setProperty('--mx', ((px + 0.5) * 100) + '%');
+      card.style.setProperty('--my', ((py + 0.5) * 100) + '%');
+    });
+    card.addEventListener('mouseleave', () => { rX(0); rY(0); if (card.id === 'fabWpp') sc(1); });
+  });
+
+  gsap.to('#fabWpp', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 1.1 });
+
+  document.querySelectorAll('.media-frame img').forEach((img) => {
+    gsap.set(img, { scale: 1.15, transformOrigin: 'center center' });
+    gsap.fromTo(img, { yPercent: -6 }, {
+      yPercent: 6, ease: 'none',
+      scrollTrigger: { trigger: img.closest('.media-frame'), start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+    });
+  });
+</script>
+
+<script type="module">
+  // Cena "Reflexo" — fundo fixo da PÁGINA INTEIRA (ver background-3d/index.html
+  // pra versão standalone documentada). Duas nuvens de partículas espelhadas
+  // por um plano horizontal, dessincronizadas no início e alinhadas em
+  // reflexo perfeito conforme o scroll avança — a "versão ainda não
+  // acessada" ganhando nitidez. Pausa quando a aba não está visível.
+  try {
+    const THREE = await import('three');
+    const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+    const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+    const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+    const { ShaderPass } = await import('three/addons/postprocessing/ShaderPass.js');
+
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const Lerp = (a, b, t) => a + (b - a) * t;
+    function hexToVec3(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      return new THREE.Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+    }
+
+    const COL_BG = '#2a1014', COL_CORE = '#eddcc4', COL_MID = '#d9a58a', COL_OUTER = '#7a3b42';
+    const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+    const canvas = document.getElementById('scene-reflexo');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(COL_BG);
+    scene.fog = new THREE.FogExp2(new THREE.Color(COL_BG).getHex(), 0.035);
+
+    const camera = new THREE.PerspectiveCamera(42, window.innerWidth / window.innerHeight, 0.1, 200);
+    camera.position.set(0, 3, 24);
+
+    const LAYERS = { SCENE: 0, BLOOM: 1 };
+    camera.layers.enable(LAYERS.SCENE); camera.layers.enable(LAYERS.BLOOM);
+
+    const renderPass = new RenderPass(scene, camera);
+    const bloomComposer = new EffectComposer(renderer);
+    bloomComposer.renderToScreen = false;
+    bloomComposer.addPass(renderPass);
+    bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.55, 0.65, 0.12));
+
+    const finalPass = new ShaderPass(new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: null }, bloomTexture: { value: bloomComposer.renderTarget2.texture },
+        uBg: { value: hexToVec3(COL_BG) }, uCore: { value: hexToVec3(COL_CORE) },
+      },
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform sampler2D tDiffuse; uniform sampler2D bloomTexture; uniform vec3 uBg; uniform vec3 uCore;
+        varying vec2 vUv;
+        void main(){
+          vec2 uv = 2.0 * vUv - 1.0; float d = length(uv);
+          vec3 vignette = uBg * (1.0 - 0.32 * d);
+          vec3 glow = uCore * smoothstep(1.1, 0.0, d) * 0.09;
+          gl_FragColor = vec4(vignette + glow + texture2D(tDiffuse, vUv).xyz + texture2D(bloomTexture, vUv).xyz, 1.0);
+        }`,
+    }));
+    const finalComposer = new EffectComposer(renderer);
+    finalComposer.addPass(renderPass);
+    finalComposer.addPass(finalPass);
+
+    function buildBaseGeometry(count, radius) {
+      const positions = new Float32Array(count * 3);
+      const seeds = new Float32Array(count);
+      const offsetsUpper = new Float32Array(count * 3);
+      const offsetsLower = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        const y = i / (count - 1);
+        const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+        const theta = GOLDEN_ANGLE * i;
+        positions[i * 3] = Math.cos(theta) * radiusAtY * radius;
+        positions[i * 3 + 1] = 0.35 * radius + y * radius * 0.9;
+        positions[i * 3 + 2] = Math.sin(theta) * radiusAtY * radius;
+        seeds[i] = Math.random();
+        for (let k = 0; k < 3; k++) {
+          offsetsUpper[i * 3 + k] = (Math.random() - 0.5) * 2;
+          offsetsLower[i * 3 + k] = (Math.random() - 0.5) * 2;
+        }
+      }
+      return { positions, seeds, offsetsUpper, offsetsLower };
+    }
+
+    function buildMirrorShell(base, mirrored, color, opacity, size) {
+      const count = base.seeds.length;
+      const positions = new Float32Array(count * 3);
+      const offsets = new Float32Array(count * 3);
+      for (let i = 0; i < count; i++) {
+        positions[i * 3] = base.positions[i * 3];
+        positions[i * 3 + 1] = mirrored ? -base.positions[i * 3 + 1] : base.positions[i * 3 + 1];
+        positions[i * 3 + 2] = base.positions[i * 3 + 2];
+        const off = mirrored ? base.offsetsLower : base.offsetsUpper;
+        offsets[i * 3] = off[i * 3]; offsets[i * 3 + 1] = off[i * 3 + 1]; offsets[i * 3 + 2] = off[i * 3 + 2];
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('seed', new THREE.BufferAttribute(base.seeds, 1));
+      geo.setAttribute('offsetDir', new THREE.BufferAttribute(offsets, 3));
+      const mat = new THREE.ShaderMaterial({
+        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        uniforms: { uTime: { value: 0 }, uColor: { value: hexToVec3(color) }, uOpacity: { value: opacity }, uSize: { value: size }, uMismatch: { value: 3.4 } },
+        vertexShader: `
+          attribute float seed; attribute vec3 offsetDir;
+          uniform float uTime; uniform float uSize; uniform float uMismatch;
+          varying float vFlicker;
+          void main(){
+            float breathe = 1.0 + sin(uTime * 0.5 + seed * 6.2831) * 0.035;
+            vec3 p = position * breathe + offsetDir * uMismatch;
+            vec4 world = modelMatrix * vec4(p, 1.0);
+            vec4 mv = viewMatrix * world;
+            vFlicker = 0.6 + 0.4 * sin(uTime * 1.3 + seed * 40.0);
+            gl_PointSize = uSize * (1.0 / -mv.z) * (0.7 + 0.6 * seed);
+            gl_Position = projectionMatrix * mv;
+          }`,
+        fragmentShader: `
+          uniform vec3 uColor; uniform float uOpacity; varying float vFlicker;
+          void main(){
+            vec2 c = gl_PointCoord - 0.5; float l = length(c);
+            if (l > 0.5) discard;
+            float a = smoothstep(0.5, 0.0, l);
+            gl_FragColor = vec4(uColor, a * uOpacity * vFlicker);
+          }`,
+      });
+      const points = new THREE.Points(geo, mat);
+      points.layers.enable(LAYERS.BLOOM); points.frustumCulled = false;
+      return { points, mat };
+    }
+
+    const group = new THREE.Group(); scene.add(group);
+    const baseCore = buildBaseGeometry(600, 4.6);
+    const baseMid = buildBaseGeometry(900, 8.4);
+    const baseOuter = buildBaseGeometry(1100, 12.8);
+    const shells = [
+      buildMirrorShell(baseCore, false, COL_CORE, 0.92, 44),
+      buildMirrorShell(baseCore, true, COL_CORE, 0.92, 44),
+      buildMirrorShell(baseMid, false, COL_MID, 0.5, 40),
+      buildMirrorShell(baseMid, true, COL_MID, 0.5, 40),
+      buildMirrorShell(baseOuter, false, COL_OUTER, 0.3, 38),
+      buildMirrorShell(baseOuter, true, COL_OUTER, 0.3, 38),
+    ];
+    shells.forEach((s) => group.add(s.points));
+
+    function pageProgress() {
+      if (window.ScrollTrigger && typeof window.ScrollTrigger.maxScroll === 'function') {
+        const max = window.ScrollTrigger.maxScroll(window);
+        return max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
+      }
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return max > 0 ? clamp(window.scrollY / max, 0, 1) : 0;
+    }
+
+    const mouseTarget = { x: 0, y: 0 }, mouse = { x: 0, y: 0 };
+    window.addEventListener('mousemove', (e) => {
+      mouseTarget.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseTarget.y = -((e.clientY / window.innerHeight) * 2 - 1);
+    }, { passive: true });
+
+    let azimuth = 0, scrollSmooth = 0, running = true, rafId = null;
+    const t0 = performance.now();
+
+    function resize() {
+      const w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio, 1.75);
+      renderer.setPixelRatio(dpr); renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      [bloomComposer, finalComposer].forEach((c) => { c.setPixelRatio(dpr); c.setSize(w, h); });
+    }
+
+    function frame() {
+      if (!running) return;
+      rafId = requestAnimationFrame(frame);
+      const t = (performance.now() - t0) / 1000;
+      const progress = pageProgress();
+      scrollSmooth = Lerp(scrollSmooth, progress, 0.06);
+      mouse.x = Lerp(mouse.x, mouseTarget.x, 0.05);
+      mouse.y = Lerp(mouse.y, mouseTarget.y, 0.05);
+
+      azimuth += 0.0006;
+      const dolly = Lerp(24, 11, scrollSmooth);
+      camera.position.set(
+        Math.sin(azimuth) * dolly + mouse.x * 1.6,
+        Lerp(3, 0.5, scrollSmooth) + mouse.y * 1.0,
+        Math.cos(azimuth) * dolly
+      );
+      camera.lookAt(mouse.x * 0.6, Lerp(1.5, 0, scrollSmooth), 0);
+
+      group.rotation.y = t * 0.015;
+
+      const mismatch = Lerp(3.4, 0.0, scrollSmooth);
+      shells.forEach((s) => { s.mat.uniforms.uTime.value = t; s.mat.uniforms.uMismatch.value = mismatch; });
+
+      camera.layers.set(LAYERS.BLOOM); bloomComposer.render();
+      camera.layers.set(LAYERS.SCENE); finalComposer.render();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      running = !document.hidden;
+      if (running) frame(); else if (rafId) cancelAnimationFrame(rafId);
+    });
+
+    resize();
+    window.addEventListener('resize', resize);
+    frame();
+  } catch (err) {
+    console.warn('Cena 3D "Reflexo" não pôde carregar — mantendo o fundo sólido.', err);
+  }
+</script>
+
+</body>
+</html>
