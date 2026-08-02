@@ -8,6 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.143.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.143.0/examples/jsm/"
+  }
+}
+</script>
 <style>
   :root{
     --nude-50:#fbf6f1; --nude-100:#f3e7db; --nude-200:#e8d5c0;
@@ -68,6 +76,19 @@
   .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
   .media-frame{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; }
   .media-frame img{ width:100%; height:100%; object-fit:cover; }
+
+  /* CONCEITO — cena 3D "Arquitetura Áurea" */
+  .conceito-3d{
+    position:relative; min-height:100vh; padding:0; overflow:hidden;
+    background:radial-gradient(120% 100% at 50% 30%, #2a1c10 0%, #150e0a 65%, #0e0906 100%);
+    display:flex; align-items:center;
+  }
+  .conceito-3d canvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
+  .conceito-inner{ position:relative; z-index:2; }
+  .conceito-panel{ max-width:460px; padding:40px; }
+  .conceito-panel .eyebrow{ color:var(--nude-200); }
+  .conceito-panel h2{ color:#fff; font-size:clamp(1.9rem, 4vw, 2.8rem); margin-bottom:14px; }
+  .conceito-panel p{ color:rgba(255,255,255,0.8); font-size:1rem; }
 
   /* PARALLAX RESULTADOS */
   .results{ background:var(--ink); color:#fff; position:relative; overflow:hidden; }
@@ -158,13 +179,13 @@
   </div>
 </section>
 
-<section id="solucao" style="background:var(--nude-100);">
-  <div class="wrap two-col reveal">
-    <div class="media-frame"><img src="media/resultado-perfil.jpg" alt="Resultado real de harmonização de perfil"></div>
-    <div>
-      <span class="eyebrow">A abordagem</span>
-      <h2>Técnica própria, olhar clínico, resultado que parece seu</h2>
-      <p style="color:var(--ink-soft); margin-top:14px;">A Arquitetura Labial é a técnica que a Dra. Larissa desenvolveu pra tratar lábios e perfil facial com proporção — sempre a partir de uma avaliação individual antes de qualquer procedimento.</p>
+<section id="solucao" class="conceito-3d">
+  <canvas id="scene-aurea"></canvas>
+  <div class="wrap conceito-inner">
+    <div class="glass conceito-panel reveal">
+      <span class="eyebrow">A técnica</span>
+      <h2>Arquitetura Labial</h2>
+      <p>A técnica que a Dra. Larissa desenvolveu pra tratar lábios e perfil facial com proporção — geometria a serviço do seu próprio rosto, sempre a partir de uma avaliação individual antes de qualquer procedimento.</p>
     </div>
   </div>
 </section>
@@ -311,6 +332,166 @@
     });
     card.addEventListener('mouseleave', () => { rX(0); rY(0); });
   });
+</script>
+
+<script type="module">
+  // Cena "Arquitetura Áurea" — embutida na seção #solucao, rodando só
+  // enquanto a seção está visível (economiza GPU/bateria no resto da página).
+  try {
+    const THREE = await import('three');
+    const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+    const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+    const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+    const { ShaderPass } = await import('three/addons/postprocessing/ShaderPass.js');
+
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const Lerp = (a, b, t) => a + (b - a) * t;
+    function hexToVec3(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      return new THREE.Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+    }
+
+    const COL_BG = '#150e0a', COL_CORE = '#f6e2c4', COL_MID = '#f2cf7a', COL_OUTER = '#8a6a3f';
+    const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+    const section = document.getElementById('solucao');
+    const canvas = document.getElementById('scene-aurea');
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(COL_BG);
+    scene.fog = new THREE.FogExp2(new THREE.Color(COL_BG).getHex(), 0.045);
+
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+    camera.position.set(0, 0, 22);
+
+    const LAYERS = { SCENE: 0, BLOOM: 1 };
+    camera.layers.enable(LAYERS.SCENE); camera.layers.enable(LAYERS.BLOOM);
+
+    const renderPass = new RenderPass(scene, camera);
+    const bloomComposer = new EffectComposer(renderer);
+    bloomComposer.renderToScreen = false;
+    bloomComposer.addPass(renderPass);
+    bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.6, 0.15));
+
+    const finalPass = new ShaderPass(new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: null }, bloomTexture: { value: bloomComposer.renderTarget2.texture },
+        uBg: { value: hexToVec3(COL_BG) }, uCore: { value: hexToVec3(COL_CORE) },
+      },
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform sampler2D tDiffuse; uniform sampler2D bloomTexture; uniform vec3 uBg; uniform vec3 uCore;
+        varying vec2 vUv;
+        void main(){
+          vec2 uv = 2.0 * vUv - 1.0; float d = length(uv);
+          vec3 vignette = uBg * (1.0 - 0.35 * d);
+          vec3 glow = uCore * smoothstep(1.1, 0.0, d) * 0.10;
+          gl_FragColor = vec4(vignette + glow + texture2D(tDiffuse, vUv).xyz + texture2D(bloomTexture, vUv).xyz, 1.0);
+        }`,
+    }));
+    const finalComposer = new EffectComposer(renderer);
+    finalComposer.addPass(renderPass);
+    finalComposer.addPass(finalPass);
+
+    function buildGoldenShell(count, radius, color, opacity) {
+      const positions = new Float32Array(count * 3), seeds = new Float32Array(count);
+      for (let i = 0; i < count; i++) {
+        const y = 1 - (i / (count - 1)) * 2;
+        const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+        const theta = GOLDEN_ANGLE * i;
+        positions[i * 3] = Math.cos(theta) * radiusAtY * radius;
+        positions[i * 3 + 1] = y * radius;
+        positions[i * 3 + 2] = Math.sin(theta) * radiusAtY * radius;
+        seeds[i] = Math.random();
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('seed', new THREE.BufferAttribute(seeds, 1));
+      const mat = new THREE.ShaderMaterial({
+        transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+        uniforms: { uTime: { value: 0 }, uColor: { value: hexToVec3(color) }, uOpacity: { value: opacity }, uSize: { value: 40 } },
+        vertexShader: `
+          attribute float seed; uniform float uTime; uniform float uSize;
+          varying float vFlicker;
+          void main(){
+            float breathe = 1.0 + sin(uTime * 0.5 + seed * 6.2831) * 0.04;
+            vec4 mv = modelViewMatrix * vec4(position * breathe, 1.0);
+            vFlicker = 0.6 + 0.4 * sin(uTime * 1.3 + seed * 40.0);
+            gl_PointSize = uSize * (1.0 / -mv.z) * (0.7 + 0.6 * seed);
+            gl_Position = projectionMatrix * mv;
+          }`,
+        fragmentShader: `
+          uniform vec3 uColor; uniform float uOpacity; varying float vFlicker;
+          void main(){
+            vec2 c = gl_PointCoord - 0.5; float l = length(c);
+            if (l > 0.5) discard;
+            float a = smoothstep(0.5, 0.0, l);
+            gl_FragColor = vec4(uColor, a * uOpacity * vFlicker);
+          }`,
+      });
+      const points = new THREE.Points(geo, mat);
+      points.layers.enable(LAYERS.BLOOM); points.frustumCulled = false;
+      return { points, mat };
+    }
+
+    const group = new THREE.Group(); scene.add(group);
+    const core = buildGoldenShell(700, 4.2, COL_CORE, 0.9);
+    const mid = buildGoldenShell(1100, 8.0, COL_MID, 0.5);
+    const outer = buildGoldenShell(1400, 12.5, COL_OUTER, 0.3);
+    group.add(core.points, mid.points, outer.points);
+
+    function sectionProgress() {
+      const r = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      return clamp((vh - r.top) / (vh + r.height), 0, 1);
+    }
+
+    let azimuth = 0, running = false, rafId = null;
+    const t0 = performance.now();
+
+    function resize() {
+      const w = section.clientWidth, h = section.clientHeight || window.innerHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      [bloomComposer, finalComposer].forEach((c) => c.setSize(w, h));
+    }
+
+    function frame() {
+      if (!running) return;
+      rafId = requestAnimationFrame(frame);
+      const t = (performance.now() - t0) / 1000;
+      const progress = sectionProgress();
+
+      azimuth += 0.0007;
+      const dolly = Lerp(22, 15, progress);
+      camera.position.set(Math.sin(azimuth) * dolly, Math.sin(t * 0.08) * 1.2, Math.cos(azimuth) * dolly);
+      camera.lookAt(0, 0, 0);
+
+      group.rotation.y = t * 0.02;
+      core.points.rotation.y = t * 0.05;
+      outer.points.rotation.y = -t * 0.015;
+      [core, mid, outer].forEach((l) => { l.mat.uniforms.uTime.value = t; });
+
+      camera.layers.set(LAYERS.BLOOM); bloomComposer.render();
+      camera.layers.set(LAYERS.SCENE); finalComposer.render();
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Só renderiza enquanto a seção está visível
+    new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !running) { running = true; frame(); }
+        else if (!e.isIntersecting && running) { running = false; if (rafId) cancelAnimationFrame(rafId); }
+      });
+    }, { threshold: 0.05 }).observe(section);
+  } catch (err) {
+    console.warn('Cena 3D "Arquitetura Áurea" não pôde carregar — mantendo o fallback CSS.', err);
+  }
 </script>
 
 </body>
