@@ -280,8 +280,19 @@
             <stop offset="0%" stop-color="#f6e2c4"/>
             <stop offset="100%" stop-color="#8a6a3f"/>
           </linearGradient>
+          <filter id="dotGlow" x="-300%" y="-300%" width="700%" height="700%">
+            <feGaussianBlur stdDeviation="3.5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
         </defs>
         <path id="goldenSpiralPath" fill="none" stroke="url(#spiralGrad)" stroke-width="1.3"/>
+        <!-- ponto de luz percorrendo a própria espiral — movimento espiral de verdade, não só rotação do desenho -->
+        <circle r="4.5" fill="#f6e2c4" filter="url(#dotGlow)" opacity="0">
+          <animateMotion dur="9s" repeatCount="indefinite" rotate="auto">
+            <mpath href="#goldenSpiralPath" xlink:href="#goldenSpiralPath"/>
+          </animateMotion>
+          <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.85;1" dur="9s" repeatCount="indefinite"/>
+        </circle>
       </svg>
       <div class="phi-label">
         <span class="phi-symbol">φ</span>
