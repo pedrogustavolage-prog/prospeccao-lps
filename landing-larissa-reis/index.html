@@ -215,7 +215,7 @@
 </nav>
 
 <header class="hero">
-  <video autoplay muted loop playsinline preload="metadata" poster="media/larissa-retrato.jpg">
+  <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" preload="auto" poster="media/larissa-retrato.jpg">
     <source src="media/larissa-video.mp4" type="video/mp4">
   </video>
   <div class="hero-inner">
@@ -453,6 +453,27 @@
   gsap.to('#preloaderFill', { width: '100%', duration: 1.6, ease: 'power1.inOut' });
   window.addEventListener('load', () => setTimeout(hidePreloader, 1200));
   setTimeout(hidePreloader, 3200); // rede lenta: garante que não trava no preloader
+
+  // Autoplay de vídeo em mobile é bloqueado por política do navegador mesmo com
+  // autoplay+muted+playsinline no HTML (comum em iOS Safari/Chrome Android com
+  // conexão lenta ou economia de dados). Forçamos .play() via JS assim que possível
+  // e, se ainda assim ficar pausado, o primeiro toque/clique do usuário força de novo.
+  (function () {
+    const heroVideo = document.getElementById('heroVideo');
+    if (!heroVideo) return;
+    function tryPlay() { heroVideo.play().catch(() => {}); }
+    tryPlay();
+    heroVideo.addEventListener('loadeddata', tryPlay);
+    heroVideo.addEventListener('canplay', tryPlay);
+    ['touchstart', 'click'].forEach(evt => {
+      document.addEventListener(evt, function forcePlay() {
+        if (heroVideo.paused) tryPlay();
+      }, { passive: true });
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && heroVideo.paused) tryPlay();
+    });
+  })();
 
   // Espiral áurea real (proporção φ) que preenche a seção da técnica
   (function () {
