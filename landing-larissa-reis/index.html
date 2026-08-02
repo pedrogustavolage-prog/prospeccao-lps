@@ -74,13 +74,29 @@
   .section-head h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); margin-bottom:14px; color:var(--text); }
   .section-head p{ color:var(--text-soft); font-size:1.05rem; }
 
-  /* CARDS DE BENEFÍCIO — ícone + numeração (padrão Botanika) */
+  /* CARDS DE BENEFÍCIO — ícone + numeração (padrão Botanika) + spotlight no hover */
   .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
-  .grid3 .card{ position:relative; overflow:hidden; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); backdrop-filter:blur(10px); border-radius:24px; padding:32px; transform-style:preserve-3d; will-change:transform; }
-  .grid3 .card .card-ic{ width:40px; height:40px; margin-bottom:18px; color:var(--gold); }
-  .grid3 .card .card-num{ position:absolute; top:14px; right:20px; font-family:'Cormorant Garamond', serif; font-weight:700; font-size:2.6rem; color:rgba(255,255,255,0.06); line-height:1; }
+  .grid3 .card{ --mx:50%; --my:50%; position:relative; overflow:hidden; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); backdrop-filter:blur(10px); border-radius:24px; padding:32px; transform-style:preserve-3d; will-change:transform; transition:border-color .4s ease, box-shadow .4s ease; }
+  .grid3 .card::after{ content:''; position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none; background:radial-gradient(260px circle at var(--mx) var(--my), rgba(224,181,104,0.22), transparent 70%); transition:opacity .4s ease; }
+  .grid3 .card:hover{ border-color:rgba(224,181,104,0.4); box-shadow:0 24px 60px rgba(0,0,0,0.4); }
+  .grid3 .card:hover::after{ opacity:1; }
+  .grid3 .card > *{ position:relative; z-index:1; }
+  .grid3 .card .card-ic{ width:40px; height:40px; margin-bottom:18px; color:var(--gold); transition:transform .4s var(--ease-cinematic); }
+  .grid3 .card:hover .card-ic{ transform:scale(1.15) rotate(-4deg); }
+  .grid3 .card .card-num{ position:absolute; top:14px; right:20px; font-family:'Cormorant Garamond', serif; font-weight:700; font-size:2.6rem; color:rgba(255,255,255,0.06); line-height:1; transition:color .4s ease; }
+  .grid3 .card:hover .card-num{ color:rgba(224,181,104,0.16); }
   .grid3 .card h3{ font-size:1.3rem; margin-bottom:10px; color:var(--gold); }
   .grid3 .card p{ color:var(--text-soft); font-size:0.95rem; }
+
+  /* ESPIRAL ÁUREA — preenche a seção da técnica com o próprio conceito */
+  .tecnica-layout{ display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center; }
+  .tecnica-spiral{ position:relative; display:flex; align-items:center; justify-content:center; min-height:380px; }
+  .spiral-svg{ width:100%; max-width:400px; height:auto; opacity:0.9; animation:spiralSpin 160s linear infinite; filter:drop-shadow(0 0 20px rgba(224,181,104,0.22)); }
+  @keyframes spiralSpin{ to{ transform:rotate(360deg); } }
+  .phi-label{ position:absolute; text-align:center; pointer-events:none; }
+  .phi-symbol{ display:block; font-family:'Cormorant Garamond', serif; font-size:4.2rem; color:var(--gold); line-height:1; }
+  .phi-num{ display:block; font-size:12.5px; letter-spacing:0.12em; color:var(--text-soft); margin-top:6px; }
+  .phi-caption{ display:block; font-size:12px; color:var(--text-soft); max-width:170px; margin:10px auto 0; line-height:1.5; }
 
   .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
   .media-frame{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; box-shadow:0 30px 80px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); }
@@ -147,15 +163,34 @@
   @keyframes dotPulse{ 0%,100%{ box-shadow:0 0 0 2px rgba(21,14,10,0.8), 0 0 0 0 rgba(95,211,138,0.5); } 50%{ box-shadow:0 0 0 2px rgba(21,14,10,0.8), 0 0 0 6px rgba(95,211,138,0); } }
   .fab-wpp svg{ width:27px; height:27px; }
 
+  /* PRÉ-CARREGAMENTO */
+  #preloader{ position:fixed; inset:0; z-index:200; background:#150e0a; display:flex; align-items:center; justify-content:center; transition:opacity .8s var(--ease-cinematic), visibility .8s; }
+  #preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .preloader-inner{ text-align:center; padding:0 24px; }
+  .preloader-inner .eyebrow{ color:var(--gold); }
+  .preloader-inner h1{ font-family:'Cormorant Garamond', serif; font-size:clamp(1.5rem,4vw,2.3rem); color:#fff; font-weight:500; line-height:1.3; margin:14px 0 34px; }
+  .preloader-bar{ width:220px; height:2px; background:rgba(255,255,255,0.12); margin:0 auto; border-radius:2px; overflow:hidden; }
+  .preloader-fill{ width:0%; height:100%; background:linear-gradient(90deg, var(--gold-dark), var(--gold)); }
+
   @media (max-width: 820px){
     .grid3{ grid-template-columns:1fr; }
     .two-col{ grid-template-columns:1fr; }
     .results-grid{ grid-template-columns:1fr; }
+    .tecnica-layout{ grid-template-columns:1fr; }
+    .tecnica-spiral{ min-height:280px; order:-1; }
     .fab-wpp{ right:16px; bottom:20px; width:54px; height:54px; }
   }
 </style>
 </head>
 <body>
+
+<div id="preloader">
+  <div class="preloader-inner">
+    <span class="eyebrow">Larissa Reis · Estética Avançada</span>
+    <h1>Bem-vinda ao seu novo<br>espaço de beleza em Belo Horizonte</h1>
+    <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+  </div>
+</div>
 
 <canvas id="scene-aurea"></canvas>
 <div id="scene-scrim"></div>
@@ -206,11 +241,27 @@
 </section>
 
 <section id="solucao">
-  <div class="wrap">
+  <div class="wrap tecnica-layout">
     <div class="glass conceito-panel reveal">
       <span class="eyebrow">A técnica</span>
       <h2>Arquitetura Labial</h2>
       <p>Não é uma técnica genérica de preenchimento. É uma abordagem autoral que a Dra. Larissa desenvolveu estudando a proporção específica de cada rosto — porque harmonização de verdade não impõe um padrão, ela revela o que já é seu.</p>
+    </div>
+    <div class="tecnica-spiral reveal" aria-hidden="true">
+      <svg class="spiral-svg" viewBox="0 0 400 400">
+        <defs>
+          <linearGradient id="spiralGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#f6e2c4"/>
+            <stop offset="100%" stop-color="#8a6a3f"/>
+          </linearGradient>
+        </defs>
+        <path id="goldenSpiralPath" fill="none" stroke="url(#spiralGrad)" stroke-width="1.3"/>
+      </svg>
+      <div class="phi-label">
+        <span class="phi-symbol">φ</span>
+        <span class="phi-num">1.618</span>
+        <span class="phi-caption">a proporção que guia cada avaliação</span>
+      </div>
     </div>
   </div>
 </section>
@@ -360,13 +411,41 @@
 <script>
   gsap.registerPlugin(ScrollTrigger);
 
-  // Word-by-word cinematic reveal do headline do Hero
-  (function () {
+  // Pré-carregamento: barra some após ~1.3s no ar (mín.) + evento load,
+  // só então o headline do Hero entra em cena (word-by-word reveal).
+  function revealHero() {
     const el = document.getElementById('hero-headline');
     const text = "Harmonização que respeita o seu rosto";
     el.innerHTML = text.split(' ').map((word, i) =>
-      `<span class="word-wrap"><span class="word-inner" style="animation-delay:${0.15 + i * 0.1}s">${word}</span></span>`
+      `<span class="word-wrap"><span class="word-inner" style="animation-delay:${0.1 + i * 0.1}s">${word}</span></span>`
     ).join(' ');
+  }
+  function hidePreloader() {
+    const pre = document.getElementById('preloader');
+    if (pre && !pre.classList.contains('hide')) { pre.classList.add('hide'); revealHero(); }
+  }
+  gsap.to('#preloaderFill', { width: '100%', duration: 1.6, ease: 'power1.inOut' });
+  window.addEventListener('load', () => setTimeout(hidePreloader, 1200));
+  setTimeout(hidePreloader, 3200); // rede lenta: garante que não trava no preloader
+
+  // Espiral áurea real (proporção φ) que preenche a seção da técnica
+  (function () {
+    const path = document.getElementById('goldenSpiralPath');
+    if (!path) return;
+    const cx = 200, cy = 200;
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const b = Math.log(phi) / (Math.PI / 2);
+    const turns = 3.4, steps = 240, thetaMax = turns * 2 * Math.PI, targetR = 175;
+    const r0 = targetR / Math.exp(b * thetaMax);
+    let d = '';
+    for (let i = 0; i <= steps; i++) {
+      const theta = thetaMax * (i / steps);
+      const r = r0 * Math.exp(b * theta);
+      const x = cx + r * Math.cos(theta);
+      const y = cy + r * Math.sin(theta);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(2) + ',' + y.toFixed(2) + ' ';
+    }
+    path.setAttribute('d', d.trim());
   })();
 
   gsap.utils.toArray('.reveal').forEach((el) => {
@@ -403,6 +482,8 @@
       const py = (e.clientY - r.top) / r.height - 0.5;
       rY(px * (card.id === 'fabWpp' ? 18 : 8)); rX(-py * (card.id === 'fabWpp' ? 18 : 8));
       if (card.id === 'fabWpp') sc(1.08);
+      card.style.setProperty('--mx', ((px + 0.5) * 100) + '%');
+      card.style.setProperty('--my', ((py + 0.5) * 100) + '%');
     });
     card.addEventListener('mouseleave', () => { rX(0); rY(0); if (card.id === 'fabWpp') sc(1); });
   });
