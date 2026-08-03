@@ -131,6 +131,7 @@
   .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
   .media-frame{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; box-shadow:0 30px 80px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); }
   .media-frame img, .media-frame video{ width:100%; height:100%; object-fit:cover; }
+  .media-frame img.portrait-face{ object-position:center 10%; }
   .media-frame.portrait-tall{ aspect-ratio:9/16; max-width:300px; margin:0 auto; }
   .media-frame.sticky-frame{ position:sticky; top:110px; }
 
@@ -199,7 +200,7 @@
   .cta-final{ position:relative; overflow:hidden; text-align:center; border-radius:28px; padding:72px 32px; border:1px solid rgba(255,255,255,0.08); background:#1c0a0c; }
   .cta-final .cta-bg{ position:absolute; inset:0; background-size:cover; background-position:center 22%; opacity:0.4; }
   .cta-final .cta-overlay{ position:absolute; inset:0; background:linear-gradient(160deg, rgba(28,10,12,0.96) 0%, rgba(74,27,36,0.88) 55%, rgba(217,165,138,0.5) 135%); }
-  .cta-final > *:not(.cta-bg):not(.cta-overlay){ position:relative; z-index:1; color:#fff; }
+  .cta-final > *:not(.cta-bg):not(.cta-overlay){ position:relative; z-index:1; }
   .cta-final h2{ color:#fff; font-size:clamp(1.8rem,4vw,2.6rem); }
   .cta-final p{ color:rgba(255,255,255,0.75); max-width:480px; margin:14px auto 32px; }
   .cta-final .btn{ background:#fff; color:var(--ink); }
@@ -486,13 +487,13 @@
       <h2>Criadora do próprio método, não aplicadora de fórmula pronta</h2>
       <p style="color:var(--text-soft); margin-top:14px;">Ana Luiza participa de congressos do setor (ESTETIKA 2026 entre eles) e é criadora do Método Aprimorar® — uma credencial que poucos negócios de estética da região têm.</p>
     </div>
-    <div class="media-frame sticky-frame reveal-diagonal" data-cursor="Ver"><img src="media/retrato-perfil-vinho.jpg" alt="Ana Luiza Assis, criadora do Método Aprimorar"></div>
+    <div class="media-frame sticky-frame reveal-diagonal" data-cursor="Ver"><img class="portrait-face" src="media/retrato-perfil-vinho.jpg" alt="Ana Luiza Assis, criadora do Método Aprimorar"></div>
   </div>
 </section>
 
 <section id="quem-sou-eu">
   <div class="wrap two-col reveal">
-    <div class="media-frame sticky-frame reveal-diagonal" style="max-width:420px;" data-cursor="Ver"><img src="media/retrato-frontal.jpg" alt="Ana Luiza Assis"></div>
+    <div class="media-frame sticky-frame reveal-diagonal" style="max-width:420px;" data-cursor="Ver"><img class="portrait-face" src="media/retrato-frontal.jpg" alt="Ana Luiza Assis"></div>
     <div>
       <span class="eyebrow">Quem cuida de você</span>
       <h2>Ana Luiza Assis, 28 anos</h2>
