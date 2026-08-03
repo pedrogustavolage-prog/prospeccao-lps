@@ -667,7 +667,7 @@
 
   try {
     document.documentElement.classList.add('smooth-active');
-    ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.4, smoothTouch: 0.1, effects: true });
+    ScrollSmoother.create({ wrapper: '#smooth-wrapper', content: '#smooth-content', smooth: 1.1, smoothTouch: 0.1, effects: true });
   } catch (err) {
     document.documentElement.classList.remove('smooth-active');
     console.warn('ScrollSmoother indisponível — mantendo scroll padrão.', err);
@@ -782,17 +782,21 @@
   if (window.innerWidth > 820) {
     const track = document.querySelector('.benef-track');
     if (track) {
+      // maxX só é recalculado no refresh (resize/load), nunca dentro do
+      // onUpdate — ler track.scrollWidth a cada tick do scroll força
+      // reflow e é a maior causa de lag num pin horizontal como esse.
+      let maxX = 0;
+      const computeMax = () => { maxX = Math.max(0, track.scrollWidth - window.innerWidth + 160); };
+      computeMax();
       ScrollTrigger.create({
         trigger: '.benef-pin',
         start: 'top top',
-        end: () => '+=' + Math.max(320, track.scrollWidth - window.innerWidth + 160),
+        end: () => '+=' + Math.max(320, maxX),
         pin: true,
         scrub: 1,
         invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const maxX = Math.max(0, track.scrollWidth - window.innerWidth + 160);
-          gsap.set(track, { x: -maxX * self.progress });
-        }
+        onRefresh: computeMax,
+        onUpdate: (self) => { gsap.set(track, { x: -maxX * self.progress }); }
       });
     }
   }
@@ -869,7 +873,11 @@
 
   gsap.to('#fabWpp', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 1.1 });
 
-  document.querySelectorAll('.media-frame img').forEach((img) => {
+  // Exclui as imagens do carrossel de resultado: elas ficam empilhadas
+  // (opacity crossfade) e só uma fica visível por vez — dar parallax
+  // individual às 5 seria 5 ScrollTriggers redundantes no mesmo trigger,
+  // sobrecarregando o scroll à toa.
+  document.querySelectorAll('.media-frame:not(.result-carousel) img').forEach((img) => {
     gsap.set(img, { scale: 1.15, transformOrigin: 'center center' });
     gsap.fromTo(img, { yPercent: -6 }, {
       yPercent: 6, ease: 'none',
@@ -974,7 +982,7 @@
 
     const canvas = document.getElementById('scene-reflexo');
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.75));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(COL_BG);
@@ -990,7 +998,12 @@
     const bloomComposer = new EffectComposer(renderer);
     bloomComposer.renderToScreen = false;
     bloomComposer.addPass(renderPass);
-    bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.55, 0.65, 0.12));
+    // Bloom renderizado em metade da resolução — é a passagem mais cara da
+    // cena (vários blurs em cascata) e ninguém percebe a diferença de
+    // nitidez num efeito que já é propositalmente desfocado. setSize()
+    // depois de cada resize do composer força de volta pra meia-resolução.
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2), 0.55, 0.65, 0.12);
+    bloomComposer.addPass(bloomPass);
 
     const finalPass = new ShaderPass(new THREE.ShaderMaterial({
       uniforms: {
@@ -1086,9 +1099,9 @@
     }
 
     const group = new THREE.Group(); scene.add(group);
-    const baseCore = buildBaseGeometry(600, 4.6);
-    const baseMid = buildBaseGeometry(900, 8.4);
-    const baseOuter = buildBaseGeometry(1100, 12.8);
+    const baseCore = buildBaseGeometry(480, 4.6);
+    const baseMid = buildBaseGeometry(700, 8.4);
+    const baseOuter = buildBaseGeometry(850, 12.8);
     const shells = [
       buildMirrorShell(baseCore, false, COL_CORE, 0.92, 44),
       buildMirrorShell(baseCore, true, COL_CORE, 0.92, 44),
@@ -1123,10 +1136,11 @@
     const t0 = performance.now();
 
     function resize() {
-      const w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio, 1.75);
+      const w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio, 1.5);
       renderer.setPixelRatio(dpr); renderer.setSize(w, h, false);
       camera.aspect = w / h; camera.updateProjectionMatrix();
       [bloomComposer, finalComposer].forEach((c) => { c.setPixelRatio(dpr); c.setSize(w, h); });
+      bloomPass.setSize(Math.max(1, Math.round(w / 2)), Math.max(1, Math.round(h / 2)));
     }
 
     function frame() {
