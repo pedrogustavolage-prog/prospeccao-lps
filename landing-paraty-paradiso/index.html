@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paraty Paradiso — Paraty-Mirim, RJ</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#04141b; --teal:#0b2d35; --turquoise:#3fb8ae; --turquoise-soft:#8fd9d0;
+    --gold:#d9b168; --gold-soft:#f0d9a0;
+    --cream:#f4efe4; --cream-soft:rgba(244,239,228,0.72);
+    --glass-bg: rgba(255,255,255,0.05);
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{ font-family:'Inter', sans-serif; color:var(--cream); background:var(--deep); line-height:1.6; overflow-x:hidden; }
+  h1,h2,h3{ font-family:'Playfair Display', serif; font-weight:600; letter-spacing:-0.01em; }
+  a{ text-decoration:none; color:inherit; }
+  img,video{ display:block; max-width:100%; }
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 24px; }
+  section{ padding:120px 0; position:relative; }
+  .eyebrow{ font-size:13px; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); font-weight:600; margin-bottom:16px; display:block; }
+  .glass{ background:var(--glass-bg); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-radius:20px; position:relative; padding:14px 24px; }
+  .glass::before{ content:''; position:absolute; inset:0; border-radius:20px; padding:1px; background:linear-gradient(135deg, rgba(255,255,255,0.32), rgba(217,177,104,0.32)); -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none; }
+  .btn{ display:inline-flex; align-items:center; gap:10px; background:var(--gold); color:#1a1305; padding:16px 34px; border-radius:100px; font-size:15px; font-weight:600; letter-spacing:0.02em; transition:transform .3s var(--ease-cinematic), background .3s var(--ease-cinematic); }
+  .btn:hover{ transform:translateY(-2px); background:var(--gold-soft); }
+
+  #bg-scrim{ position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 0%, rgba(4,20,27,0.1) 0%, rgba(4,18,24,0.5) 60%, rgba(3,14,19,0.9) 100%); }
+
+  #cursor-glow{ position:fixed; top:0; left:0; width:520px; height:520px; margin:-260px 0 0 -260px; border-radius:50%; z-index:-1; pointer-events:none;
+    background:radial-gradient(circle, rgba(63,184,174,0.12) 0%, rgba(63,184,174,0.05) 40%, transparent 72%); opacity:0; transition:opacity .6s ease; }
+  @media (hover:hover) and (pointer:fine){ #cursor-glow.on{ opacity:1; } }
+
+  #scroll-progress{ position:fixed; top:0; left:0; height:2.5px; width:100%; z-index:100; background:transparent; }
+  #scroll-progress-fill{ height:100%; width:0%; background:linear-gradient(90deg, var(--turquoise), var(--gold)); box-shadow:0 0 12px rgba(217,177,104,0.5); }
+
+  /* CENA-ASSINATURA — a mata atlântica descendo até o mar, em camadas de
+     parallax. Nasce da própria geografia do lugar (Paraty-Mirim: mata que
+     termina na água), não é reskin de referência nenhuma. */
+  .horizon-scene{ position:relative; width:100%; height:42vh; min-height:260px; overflow:hidden; }
+  .horizon-scene svg{ position:absolute; left:0; width:100%; height:auto; }
+  .horizon-sun{ position:absolute; border-radius:50%; filter:blur(1px); }
+  .horizon-far{ bottom:18%; opacity:0.5; }
+  .horizon-mid{ bottom:10%; opacity:0.78; }
+  .horizon-water{ bottom:0; opacity:1; }
+  .horizon-caption{ position:absolute; left:50%; bottom:28px; transform:translateX(-50%); text-align:center; z-index:2; white-space:nowrap; }
+
+  nav{ position:fixed; top:0; left:0; right:0; z-index:50; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 32px;
+    background:linear-gradient(180deg, rgba(3,14,19,0.75) 0%, rgba(3,14,19,0.35) 70%, transparent 100%); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); }
+  nav .brand{ font-family:'Playfair Display', serif; font-size:21px; font-weight:600; color:#fff; white-space:nowrap; }
+  nav .btn{ padding:10px 22px; font-size:13px; background:rgba(255,255,255,0.12); color:#fff; backdrop-filter:blur(10px); white-space:nowrap; }
+  @media (max-width: 480px){
+    nav{ padding:14px 18px; } nav .brand{ font-size:16px; } nav .btn{ padding:8px 14px; font-size:11.5px; }
+  }
+
+  /* HERO */
+  .hero{ min-height:100vh; position:relative; display:flex; align-items:flex-end; padding:0 0 64px; }
+  .hero video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+  .hero::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(3,14,19,0.5) 0%, rgba(3,14,19,0.14) 42%, rgba(3,10,14,0.95) 100%); z-index:1; }
+  .hero-inner{ position:relative; z-index:2; max-width:640px; padding:0 24px; }
+  .hero .eyebrow{ color:var(--turquoise-soft); }
+  .hero h1{ font-size:clamp(2.1rem, 5.2vw, 3.4rem); color:#fff; line-height:1.15; margin-bottom:18px; }
+  .hero p{ font-size:clamp(1rem, 2vw, 1.15rem); color:rgba(255,255,255,0.85); max-width:500px; margin:0 0 30px; }
+  .hero .badge-row{ display:inline-flex; margin-top:24px; color:#fff; font-size:13px; padding:10px 18px; gap:8px; align-items:center; }
+  .scroll-cue{ position:absolute; left:50%; bottom:22px; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:8px; color:rgba(255,255,255,0.65); }
+  .scroll-cue span{ font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; }
+  .scroll-cue .line{ width:1px; height:34px; background:linear-gradient(180deg, rgba(255,255,255,0.7), transparent); position:relative; overflow:hidden; }
+  .scroll-cue .line::after{ content:''; position:absolute; left:0; top:-100%; width:100%; height:100%; background:var(--gold); animation:cueDrop 1.8s ease-in-out infinite; }
+  @keyframes cueDrop{ 0%{ top:-100%; } 60%,100%{ top:100%; } }
+
+  .word-wrap{ display:inline-block; overflow:hidden; vertical-align:top; }
+  .word-inner{ display:inline-block; transform:translateY(100%); filter:blur(6px); opacity:0; animation:wordReveal .9s var(--ease-cinematic) forwards; }
+  @keyframes wordReveal{ to{ transform:translateY(0); filter:blur(0); opacity:1; } }
+
+  .marquee-band{ background:rgba(3,14,19,0.5); backdrop-filter:blur(6px); padding:18px 0; overflow:hidden; -webkit-mask:linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%); mask:linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%); }
+  .marquee-track{ display:flex; width:max-content; animation:marquee-left 34s linear infinite; gap:48px; }
+  .marquee-track span{ color:rgba(255,255,255,0.7); font-size:13px; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; display:flex; align-items:center; gap:48px; }
+  .marquee-track span::after{ content:'•'; color:var(--gold); margin-left:48px; }
+  @keyframes marquee-left{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+  .section-head{ max-width:640px; margin:0 auto 52px; text-align:center; }
+  .section-head p{ color:var(--cream-soft); font-size:1.05rem; }
+  .section-head h2{ font-size:clamp(1.8rem, 4vw, 2.6rem); margin-bottom:14px; color:var(--cream); }
+
+  .grid3{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .grid4{ display:grid; grid-template-columns:repeat(4,1fr); gap:22px; }
+  .grid3 .card, .grid4 .card{ --mx:50%; --my:50%; position:relative; overflow:hidden; background:rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.08); backdrop-filter:blur(10px); border-radius:24px; padding:30px 26px; transform-style:preserve-3d; will-change:transform; transition:border-color .4s ease, box-shadow .4s ease; }
+  .grid3 .card::after, .grid4 .card::after{ content:''; position:absolute; inset:0; z-index:0; opacity:0; pointer-events:none; background:radial-gradient(260px circle at var(--mx) var(--my), rgba(63,184,174,0.22), transparent 70%); transition:opacity .4s ease; }
+  .grid3 .card:hover, .grid4 .card:hover{ border-color:rgba(217,177,104,0.4); box-shadow:0 24px 60px rgba(0,0,0,0.4); }
+  .grid3 .card:hover::after, .grid4 .card:hover::after{ opacity:1; }
+  .grid3 .card > *, .grid4 .card > *{ position:relative; z-index:1; }
+  .card-ic{ width:38px; height:38px; margin-bottom:16px; color:var(--gold); transition:transform .4s var(--ease-cinematic); }
+  .card:hover .card-ic{ transform:scale(1.15) rotate(-4deg); }
+  .grid3 .card h3, .grid4 .card h3{ font-size:1.22rem; margin-bottom:9px; color:var(--gold); }
+  .grid3 .card p, .grid4 .card p{ color:var(--cream-soft); font-size:0.92rem; }
+
+  .two-col{ display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center; }
+  .media-frame{ border-radius:20px; overflow:hidden; aspect-ratio:4/5; box-shadow:0 30px 80px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.08); position:relative; }
+  .media-frame img, .media-frame video{ width:100%; height:100%; object-fit:cover; }
+  .media-frame.wide{ aspect-ratio:16/10; }
+
+  .suite-feature{ display:grid; grid-template-columns:1.1fr 1fr; gap:56px; align-items:center; margin-bottom:64px; }
+  .suite-feature .media-frame{ aspect-ratio:9/12; }
+  .suite-mini{ display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+  .suite-mini .card{ text-align:left; }
+  .suite-mini .suite-name{ font-family:'Playfair Display', serif; color:var(--gold); font-size:1.15rem; margin-bottom:8px; }
+
+  .faq{ display:flex; flex-direction:column; gap:12px; }
+  .faq-item{ background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:16px; overflow:hidden; transition:border-color .3s ease; }
+  .faq-item[open]{ border-color:rgba(217,177,104,0.45); }
+  .faq-item summary{ list-style:none; cursor:pointer; padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:16px; font-weight:500; font-size:1.02rem; color:var(--cream); }
+  .faq-item summary::-webkit-details-marker{ display:none; }
+  .faq-item summary::after{ content:'+'; font-family:'Playfair Display', serif; font-size:1.6rem; color:var(--gold); line-height:1; transition:transform .3s ease; flex:none; }
+  .faq-item[open] summary::after{ transform:rotate(45deg); }
+  .faq-item .faq-a{ padding:0 20px 18px; color:var(--cream-soft); font-size:0.95rem; line-height:1.65; }
+
+  .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:36px; }
+  .stat-card{ text-align:center; padding:26px 12px; border-radius:18px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.07); }
+  .stat-card .stat-n{ font-family:'Playfair Display', serif; font-size:2.2rem; color:var(--gold); font-variant-numeric:tabular-nums; }
+  .stat-card .stat-l{ font-size:12px; color:var(--cream-soft); margin-top:6px; letter-spacing:0.03em; }
+
+  .pull-quote{ text-align:center; margin:0 auto; max-width:680px; font-family:'Playfair Display', serif; font-size:clamp(1.5rem,3.6vw,2.1rem); color:var(--cream); font-style:italic; line-height:1.4; }
+  .pull-quote em{ color:var(--gold); font-style:normal; }
+
+  .cta-final{ background:linear-gradient(160deg, #06232b 0%, #0f4552 55%, #b9903f 130%); color:#fff; text-align:center; border-radius:28px; padding:72px 32px; border:1px solid rgba(255,255,255,0.08); }
+  .cta-final h2{ color:#fff; font-size:clamp(1.8rem,4vw,2.6rem); }
+  .cta-final p{ color:rgba(255,255,255,0.75); max-width:480px; margin:14px auto 32px; }
+  .cta-final .btn{ background:#fff; color:var(--deep); }
+  .cta-final .btn:hover{ background:var(--cream); }
+
+  footer{ padding:56px 0 120px; text-align:center; color:var(--cream-soft); font-size:13px; }
+  footer .brand{ font-family:'Playfair Display', serif; font-size:20px; color:var(--cream); display:block; margin-bottom:10px; }
+  .social-row{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:22px; }
+  .social-row a{ width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--cream-soft); transition:all .3s var(--ease-cinematic); }
+  .social-row a:hover{ background:var(--gold); color:#1a1305; border-color:var(--gold); }
+  .social-row svg{ width:17px; height:17px; }
+
+  .fab-cta{
+    position:fixed; right:24px; bottom:28px; z-index:60; width:64px; height:64px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; color:var(--gold);
+    background:rgba(255,255,255,0.08); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.22), 0 14px 40px rgba(0,0,0,0.45);
+    transform-style:preserve-3d; will-change:transform; opacity:0;
+  }
+  .fab-cta::before{
+    content:''; position:absolute; inset:0; border-radius:50%; padding:1.4px;
+    background:linear-gradient(160deg, rgba(255,255,255,0.6) 0%, rgba(217,177,104,0.35) 35%, rgba(255,255,255,0) 55%, rgba(63,184,174,0.35) 75%, rgba(255,255,255,0.6) 100%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; pointer-events:none;
+  }
+  .fab-cta .fab-glow{ position:absolute; inset:-26px; z-index:-1; border-radius:50%; background:radial-gradient(ellipse at center, rgba(217,177,104,0.4) 0%, rgba(217,177,104,0.14) 45%, transparent 72%); pointer-events:none; animation:fabPulse 2.8s ease-in-out infinite; }
+  @keyframes fabPulse{ 0%,100%{ opacity:.55; transform:scale(1); } 50%{ opacity:1; transform:scale(1.14); } }
+  .fab-cta svg{ width:26px; height:26px; }
+
+  #preloader{ position:fixed; inset:0; z-index:200; background:var(--deep); display:flex; align-items:center; justify-content:center; transition:opacity .8s var(--ease-cinematic), visibility .8s; }
+  #preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+  .preloader-inner{ text-align:center; padding:0 24px; }
+  .preloader-inner .eyebrow{ color:var(--gold); }
+  .preloader-inner h1{ font-family:'Playfair Display', serif; font-size:clamp(1.4rem,4vw,2.1rem); color:#fff; font-weight:500; line-height:1.3; margin:14px 0 34px; }
+  .preloader-bar{ width:220px; height:2px; background:rgba(255,255,255,0.12); margin:0 auto; border-radius:2px; overflow:hidden; }
+  .preloader-fill{ width:0%; height:100%; background:linear-gradient(90deg, var(--turquoise), var(--gold)); }
+
+  @media (hover:hover) and (pointer:fine){ body, a, button, summary, .fab-cta{ cursor:none; } }
+  .cursor-ring{ position:fixed; top:0; left:0; width:24px; height:24px; margin:-12px 0 0 -12px; border-radius:50%; border:1.3px solid var(--gold); z-index:250; pointer-events:none;
+    transition:width .28s var(--ease-cinematic), height .28s var(--ease-cinematic), margin .28s var(--ease-cinematic), background .28s ease, border-color .28s ease; }
+  .cursor-ring.hover{ width:56px; height:56px; margin:-28px 0 0 -28px; background:rgba(217,177,104,0.14); border-color:rgba(217,177,104,0.5); }
+  @media (hover:none), (pointer:coarse){ .cursor-ring{ display:none; } }
+
+  @media (max-width: 900px){
+    .grid4{ grid-template-columns:repeat(2,1fr); }
+    .suite-feature{ grid-template-columns:1fr; }
+    .suite-mini{ grid-template-columns:1fr; }
+  }
+  @media (max-width: 820px){
+    .grid3{ grid-template-columns:1fr; }
+    .two-col{ grid-template-columns:1fr; }
+    .fab-cta{ right:16px; bottom:20px; width:54px; height:54px; }
+    .stat-grid{ grid-template-columns:repeat(3,1fr); }
+    .horizon-scene{ height:30vh; min-height:190px; }
+    section{ padding:88px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="preloader-inner">
+    <span class="eyebrow">Paraty Paradiso · Paraty-Mirim</span>
+    <h1>Descendo da mata<br>até o mar</h1>
+    <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+  </div>
+</div>
+
+<div id="bg-scrim"></div>
+<div id="cursor-glow"></div>
+<div class="cursor-ring"></div>
+<div id="scroll-progress"><div id="scroll-progress-fill"></div></div>
+
+<nav>
+  <span class="brand">Paraty Paradiso</span>
+  <a class="btn" href="https://wa.me/5524998857075?text=Oi!%20Vi%20a%20p%C3%A1gina%20do%20Paraty%20Paradiso%20e%20quero%20saber%20mais." target="_blank" rel="noopener">Verificar disponibilidade</a>
+</nav>
+
+<header class="hero">
+  <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" preload="auto" poster="media/hero-piscina-mata-poster.jpg">
+    <source src="media/hero-piscina-mata.mp4" type="video/mp4">
+  </video>
+  <div class="hero-inner">
+    <span class="eyebrow">Paraty-Mirim · Paraty, RJ</span>
+    <h1 id="hero-headline"></h1>
+    <p>Suítes entre a floresta e o mar, numa pousada construída para durar — não para impressionar.</p>
+    <a class="btn" href="https://wa.me/5524998857075?text=Oi!%20Vi%20a%20p%C3%A1gina%20do%20Paraty%20Paradiso%20e%20quero%20conhecer%20o%20ref%C3%BAgio." target="_blank" rel="noopener">Conhecer o refúgio</a>
+    <div class="glass badge-row reveal">🌿&nbsp; Arquitetura sustentável desde a raiz — reaproveitamento de materiais, redução de plástico</div>
+  </div>
+  <div class="scroll-cue"><span>Role para descer</span><div class="line"></div></div>
+</header>
+
+<div class="marquee-band">
+  <div class="marquee-track">
+    <span>Piscina Natural na Mata</span>
+    <span>Suítes com Vista pro Mar</span>
+    <span>Praia a Poucos Minutos</span>
+    <span>Arquitetura Sustentável</span>
+    <span>Galpão Social Ativo</span>
+    <span>Casa na Árvore</span>
+    <span>Piscina Natural na Mata</span>
+    <span>Suítes com Vista pro Mar</span>
+    <span>Praia a Poucos Minutos</span>
+    <span>Arquitetura Sustentável</span>
+    <span>Galpão Social Ativo</span>
+    <span>Casa na Árvore</span>
+  </div>
+</div>
+
+<!-- DOR -->
+<section class="wrap">
+  <div class="section-head reveal">
+    <span class="eyebrow">A vida pede uma pausa</span>
+    <h2>Entre a tela, o trânsito e a agenda cheia, a mata vai ficando pra depois</h2>
+    <p>Dá pra sentir quando o corpo pede um respiro que a rotina não dá — mas a maioria dos lugares que prometem "descanso" continuam parecendo hotel de passagem.</p>
+  </div>
+</section>
+
+<!-- SOLUÇÃO -->
+<section class="wrap">
+  <div class="two-col">
+    <div class="reveal-clip media-frame">
+      <img src="media/por-do-sol-montanha.jpg" alt="Pôr do sol sobre a mata atlântica em Paraty-Mirim, com o mar ao fundo">
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">A resposta</span>
+      <h2>Uma pousada que a mata atlântica ajudou a construir</h2>
+      <p>O Paradiso nasceu sobre uma antiga casa de pau a pique de 1978 — a arquitetura reaproveitou o que já existia em vez de arrasar pra começar do zero. Isso segue no dia a dia: redução real de plástico, materiais reaproveitados, e uma propriedade pensada pra integrar quem visita à mata, não pra dominar ela.</p>
+      <p style="margin-top:14px; color:var(--cream-soft);">Não é decoração "eco" — é o jeito como o lugar foi de fato construído.</p>
+    </div>
+  </div>
+</section>
+
+<div class="horizon-scene" id="horizonIntro" aria-hidden="true">
+  <div class="horizon-sun" style="width:130px; height:130px; left:62%; top:10%; margin-left:-65px; background:radial-gradient(circle, rgba(240,217,160,0.85), rgba(240,217,160,0) 70%);"></div>
+  <svg class="horizon-far" viewBox="0 0 1200 260" preserveAspectRatio="none"><path d="M0,150 L100,100 L190,130 L300,70 L400,120 L510,60 L600,110 L720,80 L820,130 L940,95 L1040,140 L1200,105 L1200,260 L0,260 Z" fill="#0c2e29"/></svg>
+  <svg class="horizon-mid" viewBox="0 0 1200 260" preserveAspectRatio="none"><path d="M0,190 L120,150 L230,175 L340,140 L460,180 L580,135 L680,175 L800,145 L900,185 L1020,150 L1200,178 L1200,260 L0,260 Z" fill="#082722"/></svg>
+  <svg class="horizon-water" viewBox="0 0 1200 200" preserveAspectRatio="none"><path d="M0,60 C150,90 300,30 450,60 C600,90 750,30 900,60 C1050,90 1150,50 1200,60 L1200,200 L0,200 Z" fill="#0b2d35"/></svg>
+  <div class="horizon-caption glass"><span class="eyebrow" style="margin:0;">Onde a mata encontra o mar</span></div>
+</div>
+
+<!-- EXPERIÊNCIA / DIFERENCIAIS -->
+<section class="wrap">
+  <div class="section-head reveal">
+    <span class="eyebrow">Experiência</span>
+    <h2>O que ninguém mais em Paraty-Mirim tem igual</h2>
+  </div>
+  <div class="grid4">
+    <div class="card">
+      <svg class="card-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M24 6c8 6 14 14 14 22a14 14 0 0 1-28 0c0-8 6-16 14-22Z"/><path d="M24 20v20"/></svg>
+      <h3>Piscina natural na mata</h3>
+      <p>Água represada dentro da própria floresta, de acesso privado — nada de piscina de concreto genérica.</p>
+    </div>
+    <div class="card">
+      <svg class="card-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 36c8-14 14-22 18-22s10 8 18 22"/><circle cx="24" cy="14" r="5"/></svg>
+      <h3>Praia quase deserta por perto</h3>
+      <p>Água turquesa, poucos minutos de distância — o tipo de praia que a maioria dos turistas de Paraty nunca encontra.</p>
+    </div>
+    <div class="card">
+      <svg class="card-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><ellipse cx="24" cy="26" rx="14" ry="10"/><path d="M14 22c0-6 4-10 10-10s10 4 10 10"/></svg>
+      <h3>Vida selvagem à vontade</h3>
+      <p>Galinhas, coelho e um mico soltos pela propriedade — a natureza aqui não é só paisagem de fundo.</p>
+    </div>
+    <div class="card">
+      <svg class="card-ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 40V20l16-12 16 12v20"/><path d="M8 40h32"/><path d="M20 40V26h8v14"/></svg>
+      <h3>Galpão Social ativo</h3>
+      <p>Mais de 2.000m² à beira do rio Carapitanga, com projeto social e permacultura funcionando todos os dias — não é fachada.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SUÍTES -->
+<section class="wrap" id="suites">
+  <div class="section-head reveal">
+    <span class="eyebrow">As suítes</span>
+    <h2>Quatro jeitos diferentes de dormir na mata</h2>
+    <p>Cada suíte tem identidade própria — nenhuma é cópia da outra.</p>
+  </div>
+
+  <div class="suite-feature">
+    <div class="reveal-clip media-frame">
+      <video autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" preload="none" poster="media/deck-vista-mar-poster.jpg" data-src="media/deck-vista-mar.mp4" class="lazy-video"></video>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">A suíte-assinatura</span>
+      <h2 style="font-size:clamp(1.6rem,3.4vw,2.2rem);">Suíte Mirante</h2>
+      <p>Aberta em pleno coração da mata atlântica, de frente para o mar — funciona como um mirante permanente. Terraço solarium no rooftop, pra tomar sol de dia e observar as estrelas à noite.</p>
+    </div>
+  </div>
+
+  <div class="suite-mini">
+    <div class="card reveal">
+      <div class="suite-name">Casa na Árvore</div>
+      <p>O sonho de dormir suspenso entre os galhos, de verdade — não é decoração com esse nome, é a experiência.</p>
+    </div>
+    <div class="card reveal">
+      <div class="suite-name">Suíte Container</div>
+      <p>Uma acomodação fora do convencional, pensada pra quem quer hospedagem com identidade própria.</p>
+    </div>
+    <div class="card reveal">
+      <div class="suite-name">Suíte Fogo</div>
+      <p>Mezanino de vidro voltado pra contemplar o nascer e o pôr do sol, sem sair da cama.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LOCALIZAÇÃO / PRAIA -->
+<section class="wrap" id="localizacao">
+  <div class="two-col">
+    <div class="reveal">
+      <span class="eyebrow">Localização</span>
+      <h2>Uma praia que parece só sua</h2>
+      <p>A poucos minutos da pousada tem uma enseada de água turquesa e cristalina, quase deserta — o tipo de lugar que normalmente só quem mora em Paraty-Mirim conhece.</p>
+      <p style="margin-top:14px; color:var(--cream-soft);">Filmagem real do lugar, sem edição de cor — é assim mesmo.</p>
+    </div>
+    <div class="reveal-clip media-frame wide">
+      <video autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" preload="none" poster="media/praia-deserta-drone-poster.jpg" data-src="media/praia-deserta-drone.mp4" class="lazy-video"></video>
+    </div>
+  </div>
+</section>
+
+<!-- QUEM SOMOS -->
+<section class="wrap">
+  <div class="two-col">
+    <div class="reveal-clip media-frame">
+      <img src="media/retrato-anfitrioes.jpg" alt="Quem cuida da Pousada Paraty Paradiso, em frente a uma estrutura de madeira da propriedade">
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Quem cuida daqui</span>
+      <h2>Uma casa que virou pousada sem perder o cuidado de casa</h2>
+      <p>O Paradiso é tocado por quem mora o próprio conceito: mata preservada, plástico reduzido, e uma relação próxima com a comunidade ao redor — não é terceirizado, é vivido todo dia por quem está na propriedade.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SUSTENTABILIDADE / GALPÃO SOCIAL -->
+<section class="wrap">
+  <div class="section-head reveal">
+    <span class="eyebrow">Além da estadia</span>
+    <h2>O Galpão Social e o projeto Beija Flor</h2>
+    <p>Um espaço educador de mais de 2.000m², ao lado do rio Carapitanga, que funciona todos os dias — não só quando tem hóspede olhando.</p>
+  </div>
+  <div class="two-col" style="margin-bottom:56px;">
+    <div class="reveal-clip media-frame">
+      <img src="media/comunidade-jardim.jpg" alt="Grupo grande reunido no jardim da pousada, com ferramentas de plantio, durante uma vivência de permacultura">
+    </div>
+    <div class="reveal-clip media-frame">
+      <img src="media/evento-cultural-fogueira.jpg" alt="Roda ao redor da fogueira com convidados indígenas, durante um evento cultural na pousada">
+    </div>
+  </div>
+  <div class="stat-grid reveal">
+    <div class="stat-card"><div class="stat-n"><span class="stat-count" data-target="2000">0</span>m²</div><div class="stat-l">de área do Galpão Social</div></div>
+    <div class="stat-card"><div class="stat-n"><span class="stat-count" data-target="100">0</span></div><div class="stat-l">pessoas de capacidade pra grupos e eventos</div></div>
+    <div class="stat-card"><div class="stat-n"><span class="stat-count" data-target="4">0</span></div><div class="stat-l">suítes, cada uma única</div></div>
+  </div>
+  <p class="pull-quote" style="margin-top:48px;">Ateliê de canoas caiçaras, recepção de escolas e grupos, permacultura e o projeto social <em>Beija Flor</em> — funcionando todos os dias, não só na alta temporada.</p>
+</section>
+
+<!-- OFERTA / RESERVA -->
+<section class="wrap">
+  <div class="cta-final reveal">
+    <span class="eyebrow" style="color:var(--gold-soft);">Reserva</span>
+    <h2>Cada estadia no Paradiso é única</h2>
+    <p>Sem preço fixo de vitrine — fala com a gente pelo WhatsApp pra ver disponibilidade e valores da temporada certa pra sua vinda.</p>
+    <a class="btn" href="https://wa.me/5524998857075?text=Oi!%20Quero%20saber%20disponibilidade%20e%20valores%20do%20Paraty%20Paradiso." target="_blank" rel="noopener">Falar no WhatsApp</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wrap">
+  <div class="section-head reveal">
+    <span class="eyebrow">Perguntas frequentes</span>
+    <h2>Antes de chamar no WhatsApp</h2>
+  </div>
+  <div class="faq">
+    <details class="faq-item reveal">
+      <summary>Tem formulário de contato no site?</summary>
+      <div class="faq-a">Não — todo o contato é direto pelo WhatsApp. É a forma mais rápida de falar com a gente e já sair com disponibilidade e valores certos pra sua data.</div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>O espaço recebe grupos e eventos?</summary>
+      <div class="faq-a">Sim. O Galpão Social tem capacidade pra até 100 pessoas e já recebe escolas, grupos, palestras, casamentos, aniversários e retiros ao ar livre.</div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>A pousada tem algum projeto social ativo?</summary>
+      <div class="faq-a">Sim, o projeto Beija Flor funciona diariamente no Galpão Social, junto com ateliê de canoas caiçaras e atividades de permacultura.</div>
+    </details>
+    <details class="faq-item reveal">
+      <summary>Como faço pra reservar?</summary>
+      <div class="faq-a">Chama no WhatsApp (24) 99885-7075 — a gente confirma disponibilidade e passa os valores da temporada.</div>
+    </details>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span class="brand">Paraty Paradiso</span>
+  <span>Paraty-Mirim, Paraty — RJ</span>
+  <div class="social-row">
+    <a href="https://wa.me/5524998857075" target="_blank" rel="noopener" aria-label="WhatsApp">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.02h-.01a8.11 8.11 0 0 1-4.14-1.13l-.3-.18-3.13.82.84-3.05-.19-.31a8.09 8.09 0 0 1-1.25-4.32c0-4.47 3.64-8.11 8.12-8.11 2.17 0 4.2.85 5.73 2.38a8.06 8.06 0 0 1 2.38 5.74c0 4.47-3.65 8.16-8.05 8.16Z"/></svg>
+    </a>
+    <a href="https://www.instagram.com/paratyparadiso/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.97.24 2.43.4a4.9 4.9 0 0 1 1.77 1.15 4.9 4.9 0 0 1 1.15 1.77c.16.46.35 1.26.4 2.43.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.97-.4 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.46.16-1.26.35-2.43.4-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.97-.24-2.43-.4a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.16-.46-.35-1.26-.4-2.43C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.24-1.97.4-2.43a4.9 4.9 0 0 1 1.15-1.77A4.9 4.9 0 0 1 5.55 1.8c.46-.16 1.26-.35 2.43-.4C9.25 1.34 9.63 1.33 12 1.33m0-2.16C8.74 0 8.33.01 7.05.07c-1.28.06-2.15.26-2.91.56a7.06 7.06 0 0 0-2.56 1.67A7.06 7.06 0 0 0-.09 4.86c-.3.76-.5 1.63-.56 2.91C-.71 9.05-.72 9.46-.72 12.72s.01 3.67.07 4.95c.06 1.28.26 2.15.56 2.91a7.06 7.06 0 0 0 1.67 2.56 7.06 7.06 0 0 0 2.56 1.67c.76.3 1.63.5 2.91.56 1.28.06 1.69.07 4.95.07s3.67-.01 4.95-.07c1.28-.06 2.15-.26 2.91-.56a7.06 7.06 0 0 0 2.56-1.67 7.06 7.06 0 0 0 1.67-2.56c.3-.76.5-1.63.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.28-.26-2.15-.56-2.91a7.06 7.06 0 0 0-1.67-2.56A7.06 7.06 0 0 0 19.86.63c-.76-.3-1.63-.5-2.91-.56C15.67.01 15.26 0 12 0Z" transform="translate(0 1.28) scale(0.92)"/><circle cx="12" cy="12" r="3.6"/><circle cx="17.9" cy="6.1" r="1.1"/></svg>
+    </a>
+    <a href="mailto:contato@paratyparadiso.com.br" aria-label="E-mail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>
+    </a>
+  </div>
+</footer>
+
+<a class="fab-cta" id="fabCta" href="https://wa.me/5524998857075" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <div class="fab-glow"></div>
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.28-1.39a9.9 9.9 0 0 0 4.76 1.21h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.02h-.01a8.11 8.11 0 0 1-4.14-1.13l-.3-.18-3.13.82.84-3.05-.19-.31a8.09 8.09 0 0 1-1.25-4.32c0-4.47 3.64-8.11 8.12-8.11 2.17 0 4.2.85 5.73 2.38a8.06 8.06 0 0 1 2.38 5.74c0 4.47-3.65 8.16-8.05 8.16Z"/></svg>
+</a>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  function revealHero() {
+    const el = document.getElementById('hero-headline');
+    const text = "A mata atlântica guarda seu refúgio";
+    el.innerHTML = text.split(' ').map((word, i) =>
+      `<span class="word-wrap"><span class="word-inner" style="animation-delay:${0.1 + i * 0.1}s">${word}</span></span>`
+    ).join(' ');
+  }
+  function hidePreloader() {
+    const pre = document.getElementById('preloader');
+    if (pre && !pre.classList.contains('hide')) { pre.classList.add('hide'); revealHero(); }
+  }
+  gsap.to('#preloaderFill', { width: '100%', duration: 1.6, ease: 'power1.inOut' });
+  window.addEventListener('load', () => setTimeout(hidePreloader, 1200));
+  setTimeout(hidePreloader, 3200);
+
+  // Autoplay de vídeo em mobile é bloqueado por política do navegador mesmo com
+  // autoplay+muted+playsinline no HTML (iOS Safari/Chrome Android com conexão lenta
+  // ou economia de dados). Reforço via JS: .play() de novo em loadeddata/canplay,
+  // e o primeiro toque/clique na página força o play como rede de segurança final.
+  (function () {
+    const heroVideo = document.getElementById('heroVideo');
+    if (!heroVideo) return;
+    function tryPlay() { heroVideo.play().catch(() => {}); }
+    tryPlay();
+    heroVideo.addEventListener('loadeddata', tryPlay);
+    heroVideo.addEventListener('canplay', tryPlay);
+    ['touchstart', 'click'].forEach(evt => {
+      document.addEventListener(evt, function forcePlay() {
+        if (heroVideo.paused) tryPlay();
+      }, { passive: true });
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && heroVideo.paused) tryPlay();
+    });
+  })();
+
+  // Vídeos fora do hero (suíte-assinatura, praia) só carregam quando entram
+  // perto do viewport — evita puxar ~4-5MB de vídeo de uma vez no load inicial.
+  // Mesmo reforço de autoplay do hero se aplica a cada um assim que ganha src.
+  (function () {
+    const lazyVideos = document.querySelectorAll('.lazy-video');
+    if (!lazyVideos.length) return;
+    const armAutoplay = (video) => {
+      function tryPlay() { video.play().catch(() => {}); }
+      tryPlay();
+      video.addEventListener('loadeddata', tryPlay);
+      video.addEventListener('canplay', tryPlay);
+      ['touchstart', 'click'].forEach(evt => {
+        document.addEventListener(evt, function forcePlay() {
+          if (video.paused) tryPlay();
+        }, { passive: true });
+      });
+    };
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const video = entry.target;
+        const src = video.dataset.src;
+        if (src && !video.src) {
+          const source = document.createElement('source');
+          source.src = src; source.type = 'video/mp4';
+          video.appendChild(source);
+          video.load();
+          armAutoplay(video);
+        }
+        io.unobserve(video);
+      });
+    }, { rootMargin: '400px 0px' });
+    lazyVideos.forEach((v) => io.observe(v));
+  })();
+
+  gsap.utils.toArray('.reveal').forEach((el) => {
+    gsap.from(el, { opacity: 0, y: 28, duration: 0.9, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
+  });
+  gsap.utils.toArray('.section-head h2').forEach((h) => {
+    gsap.fromTo(h, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 1, ease: 'power3.out', scrollTrigger: { trigger: h, start: 'top 88%' } });
+  });
+  gsap.utils.toArray('.reveal-clip').forEach((el) => {
+    gsap.fromTo(el, { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 1.1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 85%' } });
+  });
+
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const ring = document.querySelector('.cursor-ring');
+    const rx = gsap.quickTo(ring, 'x', { duration: 0.35, ease: 'power3' });
+    const ry = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' });
+    const glow = document.getElementById('cursor-glow');
+    const gx = gsap.quickTo(glow, 'x', { duration: 0.9, ease: 'power2.out' });
+    const gy = gsap.quickTo(glow, 'y', { duration: 0.9, ease: 'power2.out' });
+    window.addEventListener('mousemove', (e) => {
+      rx(e.clientX); ry(e.clientY); gx(e.clientX); gy(e.clientY);
+      if (!glow.classList.contains('on')) glow.classList.add('on');
+    });
+    document.querySelectorAll('a, .card, summary, .fab-cta').forEach((el) => {
+      el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+  }
+
+  gsap.to('#scroll-progress-fill', { width: '100%', ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.3 } });
+
+  document.querySelectorAll('.btn').forEach((btn) => {
+    const mx = gsap.quickTo(btn, 'x', { duration: 0.4, ease: 'power3' });
+    const my = gsap.quickTo(btn, 'y', { duration: 0.4, ease: 'power3' });
+    btn.addEventListener('mousemove', (e) => {
+      const r = btn.getBoundingClientRect();
+      mx((e.clientX - r.left - r.width / 2) * 0.3);
+      my((e.clientY - r.top - r.height / 2) * 0.3);
+    });
+    btn.addEventListener('mouseleave', () => { mx(0); my(0); });
+  });
+
+  gsap.from('.grid4 .card', { opacity: 0, y: 24, duration: 0.7, ease: 'power2.out', stagger: 0.1, scrollTrigger: { trigger: '.grid4', start: 'top 85%' } });
+  gsap.from('.suite-mini .card', { opacity: 0, y: 24, duration: 0.7, ease: 'power2.out', stagger: 0.12, scrollTrigger: { trigger: '.suite-mini', start: 'top 88%' } });
+  gsap.from('.faq-item', { opacity: 0, y: 16, duration: 0.6, ease: 'power2.out', stagger: 0.08, scrollTrigger: { trigger: '.faq', start: 'top 88%' } });
+
+  document.querySelectorAll('.card, .fab-cta').forEach((card) => {
+    const rX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3' });
+    const rY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3' });
+    const sc = gsap.quickTo(card, 'scale', { duration: 0.4, ease: 'power3' });
+    card.addEventListener('mousemove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      rY(px * (card.id === 'fabCta' ? 18 : 8)); rX(-py * (card.id === 'fabCta' ? 18 : 8));
+      if (card.id === 'fabCta') sc(1.08);
+      card.style.setProperty('--mx', ((px + 0.5) * 100) + '%');
+      card.style.setProperty('--my', ((py + 0.5) * 100) + '%');
+    });
+    card.addEventListener('mouseleave', () => { rX(0); rY(0); if (card.id === 'fabCta') sc(1); });
+  });
+
+  gsap.to('#fabCta', { opacity: 1, duration: 0.8, ease: 'power2.out', delay: 1.1 });
+
+  document.querySelectorAll('.media-frame img').forEach((img) => {
+    gsap.set(img, { scale: 1.2, transformOrigin: 'center center' });
+    gsap.fromTo(img, { yPercent: -8 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: img.closest('.media-frame'), start: 'top bottom', end: 'bottom top', scrub: 1.2 } });
+  });
+
+  // Cena-assinatura "Onde a mata encontra o mar": camadas de mata em
+  // profundidades diferentes descendo até a água, sol nascendo devagar —
+  // nasce da geografia real do lugar (Paraty-Mirim), não de referência do kit.
+  document.querySelectorAll('.horizon-scene').forEach((scene) => {
+    const far = scene.querySelector('.horizon-far');
+    const mid = scene.querySelector('.horizon-mid');
+    const water = scene.querySelector('.horizon-water');
+    const sun = scene.querySelector('.horizon-sun');
+    if (far) gsap.fromTo(far, { yPercent: -6 }, { yPercent: 10, ease: 'none', scrollTrigger: { trigger: scene, start: 'top bottom', end: 'bottom top', scrub: 1.4 } });
+    if (mid) gsap.fromTo(mid, { yPercent: -3 }, { yPercent: 16, ease: 'none', scrollTrigger: { trigger: scene, start: 'top bottom', end: 'bottom top', scrub: 1 } });
+    if (water) gsap.fromTo(water, { yPercent: 0 }, { yPercent: 8, ease: 'none', scrollTrigger: { trigger: scene, start: 'top bottom', end: 'bottom top', scrub: 0.7 } });
+    if (sun) gsap.fromTo(sun, { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1.15, ease: 'power1.out', transformOrigin: 'center center', scrollTrigger: { trigger: scene, start: 'top 75%', end: 'top 15%', scrub: 1 } });
+  });
+
+  // Contadores animados do Galpão Social (2.000m², 100 pessoas, 4 suítes)
+  gsap.utils.toArray('.stat-count').forEach((el) => {
+    const target = parseFloat(el.dataset.target || '0');
+    const counterObj = { v: 0 };
+    gsap.to(counterObj, {
+      v: target, duration: 1.6, ease: 'power2.out',
+      scrollTrigger: { trigger: '.stat-grid', start: 'top 85%' },
+      onUpdate: () => { el.textContent = Math.round(counterObj.v); }
+    });
+  });
+
+  document.querySelectorAll('.card-ic path').forEach((path) => {
+    const len = path.getTotalLength();
+    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+    gsap.to(path, { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut', scrollTrigger: { trigger: path.closest('.card'), start: 'top 85%' } });
+  });
+</script>
+
+</body>
+</html>
