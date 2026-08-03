@@ -8,6 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.143.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.143.0/examples/jsm/"
+  }
+}
+</script>
 <style>
   :root{
     --forest-deep:#0d1811; --forest:#173023; --moss:#3f5c46;
@@ -511,56 +519,6 @@
     });
   })();
 
-  // Fundo ambiente: partículas lentas (névoa/vaga-lumes) em canvas 2D puro —
-  // sem WebGL/Three.js de propósito (ver 09-fundamentos-3d-gsap.md: nicho de
-  // hospedagem local não pede o custo extra de uma cena 3D, e ScrollSmoother +
-  // vídeo de fundo já é combinação proibida, então nada que dependa de scroll
-  // "prendendo" a página).
-  (function () {
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let w, h, particles;
-    function resize() {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    }
-    function makeParticles() {
-      const count = Math.min(46, Math.round((w * h) / 34000));
-      particles = Array.from({ length: count }, () => ({
-        x: Math.random() * w, y: Math.random() * h,
-        r: 0.6 + Math.random() * 1.6,
-        vy: -0.05 - Math.random() * 0.12,
-        drift: Math.random() * Math.PI * 2,
-        driftSpeed: 0.002 + Math.random() * 0.004,
-        alpha: 0.15 + Math.random() * 0.35,
-      }));
-    }
-    resize(); makeParticles();
-    window.addEventListener('resize', () => { resize(); makeParticles(); });
-    let running = true;
-    function frame() {
-      if (!running) return;
-      requestAnimationFrame(frame);
-      ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = '#0d1811';
-      ctx.fillRect(0, 0, w, h);
-      particles.forEach((p) => {
-        p.y += p.vy;
-        p.drift += p.driftSpeed;
-        p.x += Math.sin(p.drift) * 0.15;
-        if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(207,161,94,${p.alpha})`;
-        ctx.fill();
-      });
-    }
-    document.addEventListener('visibilitychange', () => {
-      running = !document.hidden;
-      if (running) frame();
-    });
-    frame();
-  })();
 
   gsap.utils.toArray('.reveal').forEach((el) => {
     gsap.from(el, {
@@ -722,6 +680,233 @@
       scrollTrigger: { trigger: path.closest('.card'), start: 'top 85%' }
     });
   });
+</script>
+
+<script type="module">
+  // Fundo exclusivo "Vaga-lumes na Mata": vaga-lumes reais piscam de forma
+  // irregular (não um brilho contínuo), atravessando uma clareira ao
+  // entardecer — nasce do nome/imagem do próprio lugar (mata + fogos-fátuos
+  // ao entardecer), não é reskin de nenhuma cena de referência. Reaproveita
+  // só o encanamento de renderização (composer/bloom/resize), que é
+  // infraestrutura, não a ideia (ver 10-biblioteca-de-componentes.md item 7).
+  //
+  // Cuidado de performance: cena 3D + vídeo de fundo real já causou lag e
+  // quebrou autoplay no piloto da Larissa (item 8 do mesmo arquivo) — por
+  // isso aqui a contagem de partículas é baixa (170, não milhares), pixel
+  // ratio travado em 1.5, sem shadowMap, sem ScrollSmoother, e o composer
+  // de bloom é o único estágio extra (nada de camadas/torus desnecessárias).
+  try {
+    const THREE = await import('three');
+    const { EffectComposer } = await import('three/addons/postprocessing/EffectComposer.js');
+    const { RenderPass } = await import('three/addons/postprocessing/RenderPass.js');
+    const { UnrealBloomPass } = await import('three/addons/postprocessing/UnrealBloomPass.js');
+    const { ShaderPass } = await import('three/addons/postprocessing/ShaderPass.js');
+
+    function hexToVec3(hex) {
+      const n = parseInt(hex.slice(1), 16);
+      return new THREE.Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
+    }
+
+    const COL_BG = '#0d1811', COL_GOLD = '#cfa15e', COL_GOLD_SOFT = '#e6c793', COL_MOSS = '#7fa06f';
+    const COUNT = 230, DEPTH = 40;
+
+    const canvas = document.getElementById('bg-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(COL_BG);
+    scene.fog = new THREE.FogExp2(new THREE.Color(COL_BG).getHex(), 0.045);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 60);
+    camera.position.set(0, -0.6, 5);
+
+    const LAYERS = { SCENE: 0, BLOOM: 1 };
+    camera.layers.enable(LAYERS.SCENE); camera.layers.enable(LAYERS.BLOOM);
+
+    const renderPass = new RenderPass(scene, camera);
+    const bloomComposer = new EffectComposer(renderer);
+    bloomComposer.renderToScreen = false;
+    bloomComposer.addPass(renderPass);
+    bloomComposer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.15, 0.65, 0.02));
+
+    const finalPass = new ShaderPass(new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: null }, bloomTexture: { value: bloomComposer.renderTarget2.texture },
+        uBg: { value: hexToVec3(COL_BG) },
+      },
+      vertexShader: `varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position, 1.0); }`,
+      fragmentShader: `
+        uniform sampler2D tDiffuse; uniform sampler2D bloomTexture; uniform vec3 uBg;
+        varying vec2 vUv;
+        void main(){
+          vec2 uv = 2.0 * vUv - 1.0;
+          vec3 vignette = uBg * (1.0 - 0.32 * length(uv));
+          float mist = smoothstep(1.0, -0.15, vUv.y) * 0.09;
+          vec3 mistColor = vec3(0.30, 0.40, 0.30) * mist;
+          gl_FragColor = vec4(vignette + mistColor + texture2D(bloomTexture, vUv).xyz + texture2D(tDiffuse, vUv).xyz, 1.0);
+        }`,
+    }));
+    const finalComposer = new EffectComposer(renderer);
+    finalComposer.addPass(renderPass);
+    finalComposer.addPass(finalPass);
+
+    // Geometria: vaga-lumes distribuídos numa clareira, mais concentrados
+    // perto do chão/sub-bosque (onde eles de fato voam) do que no céu.
+    const positions = new Float32Array(COUNT * 3);
+    const scales = new Float32Array(COUNT);
+    const phases = new Float32Array(COUNT);
+    const freqs = new Float32Array(COUNT);
+    const palette = new Float32Array(COUNT);
+    for (let i = 0; i < COUNT; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 18;
+      positions[i * 3 + 1] = (Math.random() - 0.62) * 9;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * DEPTH;
+      scales[i] = 0.6 + Math.pow(Math.random(), 1.5) * 2.2;
+      phases[i] = Math.random();
+      freqs[i] = 0.5 + Math.random() * 2.2;
+      palette[i] = Math.floor(Math.random() * 3);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('aScale', new THREE.BufferAttribute(scales, 1));
+    geo.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1));
+    geo.setAttribute('aFreq', new THREE.BufferAttribute(freqs, 1));
+    geo.setAttribute('aPalette', new THREE.BufferAttribute(palette, 1));
+
+    const mat = new THREE.ShaderMaterial({
+      transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+      uniforms: {
+        uTime: { value: 0 }, uSize: { value: 62 }, uDrift: { value: 0 }, uDepth: { value: DEPTH },
+        uCursor: { value: new THREE.Vector3(9999, 9999, 9999) }, uRepelRadius: { value: 3.4 }, uRepelStrength: { value: 0.6 }, uActivity: { value: 0 },
+        uColorGold: { value: hexToVec3(COL_GOLD) }, uColorGoldSoft: { value: hexToVec3(COL_GOLD_SOFT) }, uColorMoss: { value: hexToVec3(COL_MOSS) },
+        uOpacity: { value: 0 }, uBrightness: { value: 2.1 },
+      },
+      vertexShader: `
+        uniform float uTime; uniform float uSize; uniform float uDrift; uniform float uDepth;
+        uniform vec3 uCursor; uniform float uRepelRadius; uniform float uRepelStrength; uniform float uActivity;
+        uniform vec3 uColorGold; uniform vec3 uColorGoldSoft; uniform vec3 uColorMoss;
+        attribute float aScale; attribute float aPhase; attribute float aFreq; attribute float aPalette;
+        varying vec3 vColor; varying float vFlicker;
+        void main(){
+          vec3 pos = position;
+          pos.y += sin(uTime * 0.16 + aPhase * 6.2831) * 0.5;
+          pos.x += cos(uTime * 0.12 + aPhase * 6.2831) * 0.35;
+          pos.z = mod(pos.z + uDrift + uDepth * 0.5, uDepth) - uDepth * 0.5;
+
+          float pulse = sin(uTime * aFreq + aPhase * 6.2831);
+          float flash = smoothstep(0.15, 1.0, pulse);
+          vFlicker = 0.22 + 0.95 * flash;
+
+          vec4 modelPosition = modelMatrix * vec4(pos, 1.0);
+          vec3 toParticle = modelPosition.xyz - uCursor;
+          float dist = length(toParticle);
+          float falloff = smoothstep(uRepelRadius, 0.0, dist);
+          modelPosition.xyz += normalize(toParticle + vec3(0.0001)) * falloff * uRepelStrength * uActivity;
+
+          vec4 viewPosition = viewMatrix * modelPosition;
+          gl_Position = projectionMatrix * viewPosition;
+          gl_PointSize = uSize * aScale;
+          gl_PointSize *= (1.0 / -viewPosition.z);
+
+          vec3 base = aPalette < 0.66 ? uColorGold : (aPalette < 1.33 ? uColorGoldSoft : uColorMoss);
+          vColor = base;
+        }`,
+      fragmentShader: `
+        uniform float uOpacity; uniform float uBrightness;
+        varying vec3 vColor; varying float vFlicker;
+        void main(){
+          vec2 uv = gl_PointCoord - 0.5;
+          float d = length(uv);
+          if (d > 0.5) discard;
+          float strength = pow(1.0 - d * 2.0, 3.4);
+          gl_FragColor = vec4(vColor * uBrightness, strength * uOpacity * vFlicker);
+        }`,
+    });
+    const points = new THREE.Points(geo, mat);
+    points.layers.enable(LAYERS.BLOOM);
+    scene.add(points);
+
+    // Ponteiro: vaga-lumes se afastam suavemente perto do cursor (mesma
+    // mecânica de "repulsão" já usada em outras cenas do kit — isso é
+    // encanamento reaproveitável, não identidade visual).
+    const POINTER = { ndc: new THREE.Vector2(9999, 9999), world: new THREE.Vector3(9999, 9999, 9999), active: false, activity: 0, lastMove: 0 };
+    window.addEventListener('mousemove', (e) => {
+      POINTER.ndc.x = (e.clientX / window.innerWidth) * 2 - 1;
+      POINTER.ndc.y = -((e.clientY / window.innerHeight) * 2 - 1);
+      POINTER.active = true; POINTER.lastMove = performance.now();
+    }, { passive: true });
+    window.addEventListener('mouseout', () => { POINTER.active = false; });
+
+    const raycastPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    const _ray = new THREE.Raycaster();
+    const _hit = new THREE.Vector3();
+    function updatePointer() {
+      const idleMs = performance.now() - POINTER.lastMove;
+      const want = (POINTER.active && idleMs < 3000) ? 1 : 0;
+      POINTER.activity += (want - POINTER.activity) * 0.06;
+      if (POINTER.active) {
+        _ray.setFromCamera(POINTER.ndc, camera);
+        if (_ray.ray.intersectPlane(raycastPlane, _hit)) POINTER.world.lerp(_hit, 0.12);
+      }
+      mat.uniforms.uCursor.value.copy(POINTER.world);
+      mat.uniforms.uActivity.value = POINTER.activity;
+    }
+
+    function scrollFraction() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return max > 0 ? Math.max(0, Math.min(1, window.scrollY / max)) : 0;
+    }
+
+    let scrollSmooth = 0;
+    const t0 = performance.now();
+    const appearStart = performance.now();
+    let running = true, rafId = null;
+
+    function resize() {
+      const w = window.innerWidth, h = window.innerHeight, dpr = Math.min(window.devicePixelRatio, 1.5);
+      renderer.setPixelRatio(dpr); renderer.setSize(w, h, false);
+      camera.aspect = w / h; camera.updateProjectionMatrix();
+      [bloomComposer, finalComposer].forEach((c) => { c.setPixelRatio(dpr); c.setSize(w, h); });
+    }
+
+    function frame() {
+      if (!running) return;
+      rafId = requestAnimationFrame(frame);
+      const t = (performance.now() - t0) / 1000;
+      const scrollTarget = scrollFraction();
+      scrollSmooth += (scrollTarget - scrollSmooth) * 0.06;
+
+      mat.uniforms.uTime.value = t;
+      mat.uniforms.uDrift.value += 0.012 * (0.7 + scrollSmooth * 2.2);
+
+      const elapsed = performance.now() - appearStart;
+      mat.uniforms.uOpacity.value = Math.max(0, Math.min(1, (elapsed - 300) / 1400));
+
+      updatePointer();
+
+      camera.position.x = POINTER.ndc.x !== 9999 ? POINTER.ndc.x * 0.35 : 0;
+      camera.position.y = -0.6 + (POINTER.ndc.y !== 9999 ? POINTER.ndc.y * 0.25 : 0);
+      camera.position.z = 5 - scrollSmooth * 2.2;
+      camera.lookAt(camera.position.x * 0.5, -0.6, -10);
+
+      points.rotation.y = Math.sin(t * 0.03) * 0.05;
+
+      camera.layers.set(LAYERS.BLOOM); bloomComposer.render();
+      camera.layers.set(LAYERS.SCENE); finalComposer.render();
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      running = !document.hidden;
+      if (running) frame(); else if (rafId) cancelAnimationFrame(rafId);
+    });
+
+    resize();
+    window.addEventListener('resize', resize);
+    frame();
+  } catch (err) {
+    console.warn('Cena "Vaga-lumes na Mata" não pôde carregar — mantendo o fundo sólido.', err);
+  }
 </script>
 
 </body>
