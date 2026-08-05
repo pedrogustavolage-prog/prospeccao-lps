@@ -35,9 +35,6 @@
   .grain{ position:fixed; inset:0; z-index:5; pointer-events:none; opacity:0.035; mix-blend-mode:overlay;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); }
 
-  /* --- draft watermark: remover quando a midia real entrar --- */
-  .draft-tag{ position:fixed; bottom:14px; left:14px; z-index:999; font-size:0.68rem; letter-spacing:.06em; text-transform:uppercase; padding:7px 12px; border-radius:99px; color:#2a1a06; background:var(--dourado-suave); box-shadow:0 4px 16px rgba(0,0,0,.35); font-weight:700; }
-
   /* --- preloader --- */
   #preloader{ position:fixed; inset:0; z-index:300; background:var(--carvao); display:flex; align-items:center; justify-content:center; transition:opacity .8s var(--ease-cinematic), visibility .8s; }
   #preloader.hide{ opacity:0; visibility:hidden; pointer-events:none; }
@@ -76,14 +73,19 @@
 
   /* --- nav --- */
   nav{ position:fixed; top:0; left:0; right:0; z-index:100; padding:18px 0; }
-  nav .bar{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 16px; border-radius:16px; }
-  nav .brand{ font-family:'Fraunces', serif; font-size:19px; font-weight:700; color:#fff; letter-spacing:0.02em; white-space:nowrap; }
-  nav .brand span{ color:var(--dourado-suave); }
+  nav .bar{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px 16px; border-radius:16px; }
+  nav .brand{ display:flex; align-items:center; }
+  nav .brand img{ height:38px; width:auto; border-radius:6px; }
+  nav .nav-links{ display:flex; align-items:center; gap:18px; flex:none; }
+  nav .nav-link{ font-size:0.86rem; font-weight:600; color:var(--creme-fade); white-space:nowrap; transition:color .3s; }
+  nav .nav-link:hover{ color:var(--dourado-suave); }
   nav .cta{ flex:none; padding:10px 20px; border-radius:99px; background:var(--dourado); color:#1f1105; font-weight:700; font-size:0.85rem; white-space:nowrap; transition:background .3s; }
   nav .cta:hover{ background:var(--dourado-suave); }
   @media (max-width:480px){
-    nav .bar{ padding:10px 12px; }
-    nav .brand{ font-size:15px; }
+    nav .bar{ padding:8px 12px; }
+    nav .brand img{ height:30px; }
+    nav .nav-links{ gap:10px; }
+    nav .nav-link{ font-size:0.72rem; }
     nav .cta{ padding:9px 14px; font-size:0.78rem; }
   }
 
@@ -98,8 +100,8 @@
 
   /* --- hero --- */
   .hero{ position:relative; height:100svh; min-height:560px; display:flex; align-items:flex-end; overflow:hidden; }
-  .hero-video-wrap{ position:absolute; inset:0; overflow:hidden; }
-  .hero-video-wrap video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transform:scale(1.06); }
+  .hero-media{ position:absolute; inset:0; overflow:hidden; }
+  .hero-media img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 30%; transform:scale(1.06); }
   .hero::after{ content:''; position:absolute; inset:0; background:linear-gradient(0deg, rgba(9,5,2,0.94) 0%, rgba(9,5,2,0.55) 42%, rgba(9,5,2,0.25) 68%, rgba(9,5,2,0.55) 100%); z-index:1; }
   .hero-content{ position:relative; z-index:2; width:100%; padding:0 24px 96px; }
   .hero-inner{ max-width:1180px; margin:0 auto; }
@@ -238,26 +240,26 @@
 
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="grain"></div>
-<div class="draft-tag">Rascunho interno — mídia provisória</div>
 
-<a href="https://wa.me/553191092333" class="fab-wpp" id="fabWpp" aria-label="Pedir pelo WhatsApp" target="_blank" rel="noopener">
+<a href="https://wa.me/5531991092333" class="fab-wpp" id="fabWpp" aria-label="Pedir pelo WhatsApp" target="_blank" rel="noopener">
   <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.78 14.11c-.24.68-1.4 1.31-1.93 1.38-.49.07-1.11.1-1.79-.11-.41-.13-.94-.3-1.62-.6-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.16-1.55-1.16-2.96 0-1.41.74-2.1 1-2.39.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.52 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.16-.19.68-.79.87-1.06.19-.28.37-.23.63-.14.26.09 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.35Z"/></svg>
 </a>
 
 <nav>
   <div class="container">
     <div class="bar liquid-glass">
-      <div class="brand">SUPREMO <span>BURGUER</span></div>
-      <a href="#pedir" class="cta">Pedir agora</a>
+      <a href="#top" class="brand"><img src="media/logo.jpg" alt="Supremo Burguer"></a>
+      <div class="nav-links">
+        <a href="cardapio.html" class="nav-link">Cardápio</a>
+        <a href="#pedir" class="cta">Pedir agora</a>
+      </div>
     </div>
   </div>
 </nav>
 
-<header class="hero">
-  <div class="hero-video-wrap">
-    <video id="heroVideo" autoplay muted loop playsinline webkit-playsinline="true" x5-playsinline="true" preload="auto" poster="media/PLACEHOLDER-hero-poster.jpg">
-      <source src="media/PLACEHOLDER-hero-grelha.mp4" type="video/mp4">
-    </video>
+<header class="hero" id="top">
+  <div class="hero-media">
+    <img src="media/hero-lacador.jpg" alt="Laçador — hambúrguer artesanal Supremo Burguer">
   </div>
   <div class="embers" id="embersHero"></div>
   <div class="hero-content">
@@ -266,8 +268,8 @@
       <h1 id="heroTitle"></h1>
       <p class="sub" id="heroSub">Hambúrgueres artesanais de carnes nobres e ingredientes selecionados — pedido direto pelo WhatsApp, sem intermediário.</p>
       <div class="hero-actions" id="heroActions">
-        <a href="https://wa.me/553191092333" class="btn-primary" id="ctaWhats">Pedir pelo WhatsApp →</a>
-        <a href="#vitrine" class="btn-ghost">Ver o Supremo</a>
+        <a href="https://wa.me/5531991092333" class="btn-primary" id="ctaWhats">Pedir pelo WhatsApp →</a>
+        <a href="cardapio.html" class="btn-ghost">Ver cardápio</a>
       </div>
     </div>
   </div>
@@ -306,9 +308,9 @@
     <div class="dif-pin">
       <div class="container">
         <div class="dif-visual">
-          <img class="active" data-idx="0" src="media/PLACEHOLDER-burger-splash-1.jpg" alt="Hambúrguer artesanal Supremo Burguer">
-          <img data-idx="1" src="media/PLACEHOLDER-burger-splash-2.jpg" alt="Hambúrguer em camadas com bacon e cheddar">
-          <img data-idx="2" src="media/PLACEHOLDER-fritas-basket.jpg" alt="Batata frita artesanal">
+          <img class="active" data-idx="0" src="media/prod-bacon-supremo.jpg" alt="Bacon Supremo — hambúrguer com bacon crocante">
+          <img data-idx="1" src="media/prod-supremo-burguer.jpg" alt="Supremo Burguer — o carro-chefe da casa">
+          <img data-idx="2" src="media/prod-x-tudo.jpg" alt="X-Tudo — hambúrguer completo">
         </div>
         <div>
           <span class="eyebrow reveal">O diferencial</span>
@@ -341,31 +343,39 @@
     <div class="section-head">
       <span class="eyebrow reveal">Vitrine</span>
       <h2 class="reveal-clip">O sabor que faz jus ao nome</h2>
-      <p class="reveal">Fotos ilustrativas nesta versão — em breve, substituídas por fotos e vídeos reais do Supremo Burguer.</p>
+      <p class="reveal">Direto do cardápio do Supremo Burguer — <a href="cardapio.html" style="color:var(--dourado-suave); text-decoration:underline;">veja o cardápio completo com preços</a>.</p>
     </div>
     <div class="vitrine-grid">
       <div class="vitrine-card">
-        <img src="media/PLACEHOLDER-burger-splash-2.jpg" alt="Hambúrguer artesanal em camadas">
-        <span class="tag liquid-glass">Camadas de sabor</span>
+        <img src="media/prod-x-burguer.jpg" alt="X-Burguer">
+        <span class="tag liquid-glass">X-Burguer · R$ 25</span>
       </div>
       <div class="vitrine-card">
-        <video autoplay muted loop playsinline preload="metadata" poster="media/PLACEHOLDER-batata-poster.jpg">
-          <source src="media/PLACEHOLDER-batata-vapor.mp4" type="video/mp4">
-        </video>
-        <span class="tag liquid-glass">Fritas na hora</span>
+        <img src="media/prod-a-moda.jpg" alt="À Moda">
+        <span class="tag liquid-glass">À Moda · R$ 34</span>
       </div>
       <div class="vitrine-card">
-        <img src="media/PLACEHOLDER-fritas-basket.jpg" alt="Batata frita crocante">
-        <span class="tag liquid-glass">Crocância de verdade</span>
+        <img src="media/prod-havaiano.jpg" alt="Havaiano">
+        <span class="tag liquid-glass">Havaiano · R$ 28</span>
+      </div>
+      <div class="vitrine-card">
+        <img src="media/prod-x-tudo.jpg" alt="X-Tudo">
+        <span class="tag liquid-glass">X-Tudo · R$ 36</span>
+      </div>
+      <div class="vitrine-card">
+        <img src="media/prod-bacon-supremo.jpg" alt="Bacon Supremo">
+        <span class="tag liquid-glass">Bacon Supremo · R$ 39</span>
+      </div>
+      <div class="vitrine-card">
+        <img src="media/prod-supremo-burguer.jpg" alt="Supremo Burguer">
+        <span class="tag liquid-glass">Supremo Burguer · R$ 43</span>
       </div>
     </div>
   </div>
 </section>
 
 <section class="pedir" id="pedir">
-  <video class="pedir-bg" autoplay muted loop playsinline preload="metadata">
-    <source src="media/PLACEHOLDER-burger-mesa.mp4" type="video/mp4">
-  </video>
+  <img class="pedir-bg" src="media/banner-picanha.jpg" alt="">
   <div class="embers" id="embersPedir"></div>
   <div class="container">
     <div class="pedir-box reveal">
@@ -373,10 +383,10 @@
       <h2>Chama a gente no WhatsApp</h2>
       <p>Pedido direto, sem taxa de app e sem depender do algoritmo do Instagram — fala com o Supremo Burguer agora.</p>
       <div class="pedir-actions">
-        <a href="https://wa.me/553191092333" class="btn-primary">Pedir pelo WhatsApp →</a>
-        <a href="https://instagram.com/supremoburguerhamburgueria" target="_blank" rel="noopener" class="btn-ghost">@supremoburguerhamburgueria</a>
+        <a href="https://wa.me/5531991092333" class="btn-primary">Pedir pelo WhatsApp →</a>
+        <a href="cardapio.html" class="btn-ghost">Ver cardápio completo</a>
       </div>
-      <p class="canal-nota">Também disponível no iFood.</p>
+      <p class="canal-nota">Também disponível no iFood · @supremoburguerhamburgueria no Instagram · consulte a taxa de entrega da sua região.</p>
     </div>
   </div>
 </section>
@@ -400,6 +410,10 @@
         <summary>Quais as formas de pagamento?</summary>
         <p class="a">Confirma direto no pedido, pelo WhatsApp ou pelo iFood.</p>
       </details>
+      <details class="faq-item reveal">
+        <summary>Onde vejo o cardápio completo?</summary>
+        <p class="a"><a href="cardapio.html" style="color:var(--dourado-suave); text-decoration:underline;">Clique aqui pra ver todos os lanches, massas e acompanhamentos com preço</a>.</p>
+      </details>
     </div>
   </div>
 </section>
@@ -417,11 +431,15 @@
   <div class="container">
     <div class="foot-grid">
       <div>
-        <div class="brand">SUPREMO BURGUER</div>
-        <p style="color:var(--creme-fade); font-size:0.9rem; margin-top:8px; max-width:280px;">O sabor que faz jus ao nome.</p>
+        <img src="media/logo.jpg" alt="Supremo Burguer" style="height:40px; width:auto; border-radius:6px; margin-bottom:10px;">
+        <p style="color:var(--creme-fade); font-size:0.9rem; max-width:280px;">O sabor que faz jus ao nome.</p>
       </div>
       <div class="socials">
-        <a class="social-btn" href="https://wa.me/553191092333" target="_blank" rel="noopener" aria-label="WhatsApp">
+        <a class="social-btn" href="cardapio.html" aria-label="Cardápio">
+          <svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm8 1.5V8h4.5L14 3.5ZM8 12h8v1.5H8V12Zm0 3.5h8V17H8v-1.5ZM8 8.5h4V10H8V8.5Z"/></svg>
+          Cardápio
+        </a>
+        <a class="social-btn" href="https://wa.me/5531991092333" target="_blank" rel="noopener" aria-label="WhatsApp">
           <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.78 14.11c-.24.68-1.4 1.31-1.93 1.38-.49.07-1.11.1-1.79-.11-.41-.13-.94-.3-1.62-.6-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.16-1.55-1.16-2.96 0-1.41.74-2.1 1-2.39.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.52 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.16-.19.68-.79.87-1.06.19-.28.37-.23.63-.14.26.09 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.35Z"/></svg>
           WhatsApp
         </a>
@@ -435,7 +453,7 @@
         </a>
       </div>
     </div>
-    <p class="fine">LP de prospecção — versão em construção, mídia provisória.</p>
+    <p class="fine">Supremo Burguer — Hamburgueria Artesanal.</p>
   </div>
 </footer>
 
@@ -544,8 +562,8 @@
     });
   });
 
-  // ---------- Zoom sutil do video do hero ao rolar ----------
-  gsap.to('.hero-video-wrap video', {
+  // ---------- Zoom sutil da imagem do hero ao rolar ----------
+  gsap.to('.hero-media img', {
     scale: 1.16,
     ease: 'none',
     scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
@@ -580,22 +598,6 @@
     });
   })();
 
-  // ---------- Reforco de autoplay dos videos (mobile) ----------
-  document.querySelectorAll('video[autoplay]').forEach((v) => {
-    function tryPlay() { v.play().catch(() => {}); }
-    tryPlay();
-    v.addEventListener('loadeddata', tryPlay);
-    v.addEventListener('canplay', tryPlay);
-    ['touchstart', 'click'].forEach(evt => {
-      document.addEventListener(evt, function forcePlay() {
-        if (v.paused) tryPlay();
-      }, { passive: true });
-    });
-  });
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) return;
-    document.querySelectorAll('video[autoplay]').forEach((v) => { if (v.paused) v.play().catch(() => {}); });
-  });
 </script>
 </body>
 </html>

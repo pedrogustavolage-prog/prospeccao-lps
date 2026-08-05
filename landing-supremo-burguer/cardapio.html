@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cardápio — Supremo Burguer</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --carvao: #130c07;
+    --carvao-2: #1d130b;
+    --dourado: #e0973c;
+    --dourado-suave: #f4c26b;
+    --creme: #f7ecd9;
+    --creme-fade: rgba(247,236,217,0.68);
+    --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scrollbar-color: var(--dourado) var(--carvao); scrollbar-width:thin; }
+  body{ font-family:'Inter', sans-serif; color:var(--creme); background:var(--carvao); line-height:1.6; }
+  h1,h2,h3{ font-family:'Fraunces', serif; font-weight:600; letter-spacing:-0.01em; }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  .container{ max-width:980px; margin:0 auto; padding:0 24px; }
+  .eyebrow{ font-size:0.78rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--dourado-suave); font-weight:600; }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-track{ background:var(--carvao); }
+  ::-webkit-scrollbar-thumb{ background:linear-gradient(var(--dourado), var(--dourado-suave)); border-radius:10px; border:2px solid var(--carvao); }
+
+  .liquid-glass{
+    background: rgba(255, 255, 255, 0.01); background-blend-mode: luminosity;
+    backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    border: none; box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    position: relative; overflow: hidden;
+  }
+  .liquid-glass::before{
+    content:''; position:absolute; inset:0; border-radius:inherit; padding:1.4px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%, rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+  }
+
+  nav{ position:fixed; top:0; left:0; right:0; z-index:100; padding:18px 0; }
+  nav .bar{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:10px 16px; border-radius:16px; }
+  nav .brand img{ height:38px; width:auto; border-radius:6px; }
+  nav .nav-links{ display:flex; align-items:center; gap:18px; }
+  nav .nav-link{ font-size:0.86rem; font-weight:600; color:var(--creme-fade); }
+  nav .nav-link:hover{ color:var(--dourado-suave); }
+  nav .cta{ padding:10px 20px; border-radius:99px; background:var(--dourado); color:#1f1105; font-weight:700; font-size:0.85rem; white-space:nowrap; }
+  @media (max-width:480px){ nav .bar{ padding:8px 12px; } nav .brand img{ height:30px; } nav .nav-links{ gap:10px; } nav .nav-link{ font-size:0.72rem; } nav .cta{ padding:9px 14px; font-size:0.78rem; } }
+
+  .menu-hero{ padding:150px 0 60px; text-align:center; background:radial-gradient(60% 60% at 50% 0%, rgba(224,151,60,0.12), var(--carvao) 70%); }
+  .menu-hero .crown{ font-size:2rem; }
+  .menu-hero h1{ font-size:clamp(2.1rem,5vw,3.4rem); color:#fff; margin-top:12px; }
+  .menu-hero p{ margin-top:14px; color:var(--creme-fade); max-width:520px; margin-left:auto; margin-right:auto; }
+  .menu-hero .actions{ margin-top:30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary{ display:inline-flex; align-items:center; gap:10px; padding:15px 28px; border-radius:99px; background:var(--dourado); color:#1f1105; font-weight:700; font-size:0.98rem; box-shadow:0 8px 30px rgba(224,151,60,0.25); }
+  .btn-ghost{ display:inline-flex; align-items:center; gap:8px; padding:14px 24px; border-radius:99px; color:var(--creme); font-weight:600; font-size:0.92rem; border:1px solid rgba(247,236,217,0.25); }
+
+  section.cat{ padding:56px 0; }
+  section.cat:nth-child(even){ background:var(--carvao-2); }
+  .cat-head{ display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-bottom:30px; flex-wrap:wrap; }
+  .cat-head h2{ font-size:clamp(1.5rem,3.2vw,2rem); color:#fff; }
+  .cat-note{ color:var(--dourado-suave); font-size:0.86rem; font-weight:600; }
+
+  .item-grid{ display:grid; grid-template-columns:1fr 1fr; gap:28px 40px; }
+  @media (max-width:720px){ .item-grid{ grid-template-columns:1fr; } }
+  .item{ display:flex; justify-content:space-between; gap:14px; padding-bottom:18px; border-bottom:1px solid rgba(247,236,217,0.08); opacity:0; transform:translateY(16px); }
+  .item .info h3{ font-size:1.05rem; color:#fff; font-weight:600; }
+  .item .info p{ color:var(--creme-fade); font-size:0.88rem; margin-top:4px; max-width:380px; }
+  .item .price{ flex:none; font-family:'Fraunces', serif; font-weight:700; color:var(--dourado-suave); font-size:1.1rem; white-space:nowrap; }
+
+  .choices{ margin-top:10px; display:flex; flex-wrap:wrap; gap:10px; }
+  .choices .pill{ padding:8px 16px; border-radius:99px; font-size:0.82rem; color:var(--creme-fade); border:1px solid rgba(247,236,217,0.14); }
+
+  .combo-box{ margin-top:36px; padding:26px 28px; border-radius:20px; background:linear-gradient(155deg, rgba(224,151,60,0.14), rgba(224,151,60,0.03)); border:1px solid rgba(224,151,60,0.22); display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; }
+  .combo-box h3{ color:#fff; font-size:1.15rem; }
+  .combo-box p{ color:var(--creme-fade); font-size:0.9rem; margin-top:4px; }
+  .combo-box .price{ font-family:'Fraunces', serif; font-weight:700; color:var(--dourado-suave); font-size:1.3rem; }
+
+  .original-scan{ padding:70px 0; text-align:center; }
+  .original-scan .eyebrow{ display:block; margin-bottom:14px; }
+  .original-scan img{ max-width:420px; margin:0 auto; border-radius:16px; box-shadow:0 20px 60px rgba(0,0,0,0.5); }
+  .original-scan p.note{ margin-top:16px; color:rgba(247,236,217,0.45); font-size:0.82rem; }
+
+  footer{ background:#0c0704; padding:56px 0 30px; }
+  footer .foot-grid{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:32px; padding-bottom:32px; border-bottom:1px solid rgba(247,236,217,0.08); }
+  footer .socials{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-start; }
+  footer .social-btn{ display:inline-flex; align-items:center; gap:9px; padding:10px 16px; border-radius:99px; border:1px solid rgba(247,236,217,0.16); color:var(--creme-fade); font-size:0.86rem; font-weight:600; }
+  footer .social-btn svg{ width:17px; height:17px; flex:none; fill:currentColor; }
+  footer .social-btn:hover{ color:var(--dourado-suave); border-color:rgba(224,151,60,0.5); }
+  footer .fine{ margin-top:24px; font-size:0.8rem; color:rgba(247,236,217,0.35); text-align:center; }
+
+  .fab-wpp{ position:fixed; right:20px; bottom:20px; z-index:150; width:58px; height:58px; border-radius:50%; background:#1fb855; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+  .fab-wpp svg{ width:28px; height:28px; fill:#fff; }
+  .fab-wpp::before{ content:''; position:absolute; inset:0; border-radius:50%; background:#1fb855; opacity:0.55; animation:fabPulse 2.4s ease-out infinite; z-index:-1; }
+  @keyframes fabPulse{ 0%{ transform:scale(1); opacity:0.55; } 100%{ transform:scale(1.9); opacity:0; } }
+  @media (max-width:480px){ .fab-wpp{ width:52px; height:52px; right:14px; bottom:14px; } .fab-wpp svg{ width:25px; height:25px; } }
+</style>
+</head>
+<body>
+
+<a href="https://wa.me/5531991092333" class="fab-wpp" aria-label="Pedir pelo WhatsApp" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.78 14.11c-.24.68-1.4 1.31-1.93 1.38-.49.07-1.11.1-1.79-.11-.41-.13-.94-.3-1.62-.6-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.16-1.55-1.16-2.96 0-1.41.74-2.1 1-2.39.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.52 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.16-.19.68-.79.87-1.06.19-.28.37-.23.63-.14.26.09 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.35Z"/></svg>
+</a>
+
+<nav>
+  <div class="container">
+    <div class="bar liquid-glass">
+      <a href="index.html" class="brand"><img src="media/logo.jpg" alt="Supremo Burguer"></a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">← Voltar ao site</a>
+        <a href="https://wa.me/5531991092333" class="cta" target="_blank" rel="noopener">Pedir agora</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<header class="menu-hero">
+  <div class="container">
+    <span class="crown">👑</span>
+    <h1>Cardápio</h1>
+    <p>Clássicos, gourmet, massas e acompanhamentos — tudo com carnes nobres e ingredientes selecionados, feito na hora.</p>
+    <div class="actions">
+      <a href="https://wa.me/5531991092333" class="btn-primary" target="_blank" rel="noopener">Pedir pelo WhatsApp →</a>
+      <a href="#classicos" class="btn-ghost">Ver o cardápio</a>
+    </div>
+  </div>
+</header>
+
+<section class="cat" id="classicos">
+  <div class="container">
+    <div class="cat-head"><h2>Clássicos</h2></div>
+    <div class="item-grid">
+      <div class="item"><div class="info"><h3>X-Burguer</h3><p>Pão, hambúrguer artesanal bovino 100g, mussarela, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 25</span></div>
+      <div class="item"><div class="info"><h3>Havaiano</h3><p>Pão, hambúrguer artesanal bovino 100g, mussarela, presunto, catupiry, banana, abacaxi, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 28</span></div>
+      <div class="item"><div class="info"><h3>Laçador</h3><p>Pão, hambúrguer artesanal bovino 100g, bacon, mussarela, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 30</span></div>
+      <div class="item"><div class="info"><h3>X-Tudo</h3><p>Pão, hambúrguer artesanal bovino 100g, frango desfiado, bacon, ovo, mussarela, presunto, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 36</span></div>
+      <div class="item"><div class="info"><h3>À Moda</h3><p>Pão, hambúrguer artesanal bovino 100g, bacon, ovo, mussarela, presunto, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 34</span></div>
+      <div class="item"><div class="info"><h3>Supremo Burguer</h3><p>Pão, 2 hambúrguer artesanal bovino 100g, frango desfiado, bacon, ovo, 2 fatias de mussarela, presunto, catupiry, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 43</span></div>
+      <div class="item"><div class="info"><h3>Framburguer</h3><p>Pão, frango desfiado, bacon, ovo, mussarela, alface, tomate, maionese, batata palha e milho.</p></div><span class="price">R$ 27</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cat" id="gourmet">
+  <div class="container">
+    <div class="cat-head">
+      <h2>Gourmet</h2>
+      <span class="cat-note">O queijo, a salada e o molho é você que escolhe!</span>
+    </div>
+    <div class="item-grid">
+      <div class="item"><div class="info"><h3>Especial</h3><p>Pão de brioche, hambúrguer artesanal bovino 150g, queijo, salada e molho.</p></div><span class="price">R$ 30</span></div>
+      <div class="item"><div class="info"><h3>Chiken Crocante</h3><p>Pão de brioche, peito de frango empanado frito, queijo, salada e molho.</p></div><span class="price">R$ 33</span></div>
+      <div class="item"><div class="info"><h3>Costela</h3><p>Pão de brioche, hambúrguer de costela bovina 150g, queijo, salada e molho.</p></div><span class="price">R$ 33</span></div>
+      <div class="item"><div class="info"><h3>Bacon Supremo</h3><p>Pão de brioche, hambúrguer artesanal 150g, 4 fatias de bacon crocante, anéis de cebola, queijo, salada e molho.</p></div><span class="price">R$ 39</span></div>
+      <div class="item"><div class="info"><h3>Chiken</h3><p>Pão de brioche, peito de frango grelhado, queijo, salada e molho.</p></div><span class="price">R$ 30</span></div>
+      <div class="item"><div class="info"><h3>Supremo Picanha</h3><p>Pão de brioche, 2 hambúrguer artesanal de picanha 150g, 4 fatias de bacon crocante, queijo, salada e molho.</p></div><span class="price">R$ 45</span></div>
+      <div class="item"><div class="info"><h3>Ribs BBQ</h3><p>Pão de brioche, hambúrguer de costelinha 150g ao molho bbq, queijo, salada e molho.</p></div><span class="price">R$ 33</span></div>
+    </div>
+
+    <div class="choices">
+      <span class="pill">🥗 Salada: cebola roxa · alface americana · tomate · picles · azeitona · cebola branca · alface crespa</span>
+    </div>
+    <div class="choices">
+      <span class="pill">🥫 Molho: baconese · maionese temperada · mostarda · chipotle · maionese defumada · molho de cheddar · barbecue · maionese</span>
+    </div>
+    <div class="choices">
+      <span class="pill">🧀 Queijo: cheddar · cream cheese · catupiry · queijo prato · mussarela</span>
+    </div>
+  </div>
+</section>
+
+<section class="cat" id="massas">
+  <div class="container">
+    <div class="cat-head"><h2>Massas</h2></div>
+    <div class="item-grid">
+      <div class="item"><div class="info"><h3>Macarrão na Chapa</h3><p>300g de espaguete, cebola, tomate, pimentão, bacon, carne bovina moída, mussarela, orégano e molhos especiais.</p></div><span class="price">R$ 29</span></div>
+      <div class="item"><div class="info"><h3>Espaguete à Bolonhesa</h3><p>300g de espaguete, molho à bolonhesa, creme de leite, mussarela e orégano.</p></div><span class="price">R$ 29</span></div>
+      <div class="item"><div class="info"><h3>Espaguete de Frango</h3><p>300g de espaguete, molho de tomate, creme de leite, peito de frango em cubos, mussarela e orégano.</p></div><span class="price">R$ 29</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="cat" id="acompanhamentos">
+  <div class="container">
+    <div class="cat-head"><h2>Acompanhamentos</h2></div>
+    <div class="item-grid">
+      <div class="item"><div class="info"><h3>Anéis de Cebola</h3></div><span class="price">R$ 16</span></div>
+      <div class="item"><div class="info"><h3>Batata Rústica</h3></div><span class="price">R$ 16</span></div>
+      <div class="item"><div class="info"><h3>Batata Crinkle</h3></div><span class="price">R$ 16</span></div>
+    </div>
+    <div class="combo-box">
+      <div><h3>Combo</h3><p>Adicione um refrigerante lata e um acompanhamento a qualquer pedido.</p></div>
+      <span class="price">+ R$ 20</span>
+    </div>
+  </div>
+</section>
+
+<section class="original-scan">
+  <div class="container">
+    <span class="eyebrow">Conferir preços</span>
+    <img src="media/cardapio-foto.jpg" alt="Foto original do cardápio do Supremo Burguer, com todos os preços">
+    <p class="note">Foto original do cardápio, fornecida pelo Supremo Burguer — use pra conferir qualquer preço ou combinação.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <img src="media/logo.jpg" alt="Supremo Burguer" style="height:40px; width:auto; border-radius:6px; margin-bottom:10px;">
+        <p style="color:var(--creme-fade); font-size:0.9rem; max-width:280px;">O sabor que faz jus ao nome.</p>
+      </div>
+      <div class="socials">
+        <a class="social-btn" href="index.html" aria-label="Voltar ao site">← Voltar ao site</a>
+        <a class="social-btn" href="https://wa.me/5531991092333" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.96 6.45 17.5 2 12.04 2Zm5.78 14.11c-.24.68-1.4 1.31-1.93 1.38-.49.07-1.11.1-1.79-.11-.41-.13-.94-.3-1.62-.6-2.85-1.23-4.7-4.1-4.84-4.29-.14-.19-1.16-1.55-1.16-2.96 0-1.41.74-2.1 1-2.39.26-.29.57-.36.76-.36.19 0 .38 0 .55.01.18.01.41-.07.64.49.24.58.81 2 .88 2.14.07.14.12.31.02.5-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.52 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.16-.19.68-.79.87-1.06.19-.28.37-.23.63-.14.26.09 1.64.77 1.92.91.28.14.47.21.54.33.07.12.07.68-.17 1.35Z"/></svg>
+          WhatsApp
+        </a>
+        <a class="social-btn" href="https://instagram.com/supremoburguerhamburgueria" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.97.24 2.43.4a4.9 4.9 0 0 1 1.77 1.15 4.9 4.9 0 0 1 1.15 1.77c.16.46.35 1.26.4 2.43.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.97-.4 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.46.16-1.26.35-2.43.4-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.97-.24-2.43-.4a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.16-.46-.35-1.26-.4-2.43C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.24-1.97.4-2.43A4.9 4.9 0 0 1 3.78 3a4.9 4.9 0 0 1 1.77-1.15c.46-.16 1.26-.35 2.43-.4C9.25 1.4 9.63 1.39 12 1.39Zm0 1.8c-3.15 0-3.5.01-4.73.07-.96.04-1.48.2-1.82.34-.46.18-.79.39-1.13.73-.34.34-.55.67-.73 1.13-.14.34-.3.86-.34 1.82-.06 1.23-.07 1.58-.07 4.73s.01 3.5.07 4.73c.04.96.2 1.48.34 1.82.18.46.39.79.73 1.13.34.34.67.55 1.13.73.34.14.86.3 1.82.34 1.23.06 1.58.07 4.73.07s3.5-.01 4.73-.07c.96-.04 1.48-.2 1.82-.34.46-.18.79-.39 1.13-.73.34-.34.55-.67.73-1.13.14-.34.3-.86.34-1.82.06-1.23.07-1.58.07-4.73s-.01-3.5-.07-4.73c-.04-.96-.2-1.48-.34-1.82a3.1 3.1 0 0 0-.73-1.13 3.1 3.1 0 0 0-1.13-.73c-.34-.14-.86-.3-1.82-.34-1.23-.06-1.58-.07-4.73-.07Zm0 3.87a5.17 5.17 0 1 1 0 10.34 5.17 5.17 0 0 1 0-10.34Zm0 1.8a3.37 3.37 0 1 0 0 6.74 3.37 3.37 0 0 0 0-6.74Zm5.38-2a1.21 1.21 0 1 1 0 2.42 1.21 1.21 0 0 1 0-2.42Z"/></svg>
+          Instagram
+        </a>
+      </div>
+    </div>
+    <p class="fine">Supremo Burguer — Hamburgueria Artesanal.</p>
+  </div>
+</footer>
+
+<script src="vendor/gsap.min.js"></script>
+<script src="vendor/ScrollTrigger.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.utils.toArray('.item').forEach((el, i) => {
+    gsap.to(el, {
+      opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: (i % 4) * 0.05,
+      scrollTrigger: { trigger: el, start: 'top 92%' }
+    });
+  });
+</script>
+</body>
+</html>
